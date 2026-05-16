@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&family=Lato:wght@400;700&display=swap');
+
+*{margin:0;padding:0;box-sizing:border-box;}
+
+body{
+  width:1080px;height:1080px;overflow:hidden;
+  font-family:'Montserrat',sans-serif;
+  background:#111;
+}
+
+.card{
+  width:1080px;height:1080px;
+  position:relative;overflow:hidden;
+  background:linear-gradient(148deg,#0F2205 0%,#1C380A 35%,#27500A 65%,#1A3008 100%);
+  padding:40px;
+  display:flex;flex-direction:column;gap:0;
+}
+
+/* ── Texturas / decoração ── */
+.card::before{
+  content:'';position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse 600px 400px at 80% 10%, rgba(90,160,30,.18) 0%, transparent 70%),
+    radial-gradient(ellipse 400px 600px at 10% 90%, rgba(245,184,32,.08) 0%, transparent 70%);
+  pointer-events:none;
+}
+
+.card::after{
+  content:'';position:absolute;
+  right:-80px;top:-80px;
+  width:420px;height:420px;
+  border-radius:50%;
+  background:radial-gradient(circle,rgba(90,170,20,.22) 0%,transparent 70%);
+  pointer-events:none;
+}
+
+/* ── URGÊNCIA BADGE (topo direito) ── */
+.urgency{
+  position:absolute;top:40px;right:40px;
+  background:linear-gradient(135deg,#E8370A,#FF5722);
+  color:#fff;
+  border-radius:12px;
+  padding:10px 22px;
+  text-align:center;
+  box-shadow:0 4px 20px rgba(232,55,10,.5);
+  z-index:10;
+}
+.urgency-label{font-size:11px;font-weight:700;letter-spacing:2px;opacity:.9;text-transform:uppercase;}
+.urgency-value{font-size:30px;font-weight:900;line-height:1;letter-spacing:-1px;}
+.urgency-sub{font-size:10px;font-weight:600;letter-spacing:1.5px;opacity:.85;text-transform:uppercase;}
+
+/* ── HEADER ── */
+.header{
+  display:flex;align-items:center;gap:14px;
+  margin-bottom:18px;
+  padding-right:200px;
+}
+.logo-icon{
+  width:54px;height:54px;
+  background:linear-gradient(135deg,#7AB83A,#4A8A1A);
+  border-radius:14px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:26px;
+  box-shadow:0 4px 16px rgba(0,0,0,.3);
+  flex-shrink:0;
+}
+.brand{
+  display:flex;flex-direction:column;
+}
+.brand-name{
+  font-size:36px;font-weight:900;
+  color:#fff;letter-spacing:-1px;line-height:1;
+}
+.brand-name span{
+  background:linear-gradient(90deg,#F5B820,#FFD966);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+.pre-venda-pill{
+  display:inline-block;margin-top:4px;
+  background:rgba(245,184,32,.15);
+  border:1px solid rgba(245,184,32,.35);
+  border-radius:20px;padding:2px 12px;
+  font-size:10px;font-weight:700;letter-spacing:2px;
+  color:#F5B820;text-transform:uppercase;
+  width:fit-content;
+}
+
+/* ── SLOGAN ── */
+.slogan{
+  font-size:19px;font-weight:700;
+  color:rgba(255,255,255,.92);
+  line-height:1.4;
+  border-left:4px solid #7AB83A;
+  padding-left:16px;
+  margin-bottom:20px;
+  max-width:760px;
+}
+
+/* ── TOOLS PILLS ── */
+.tools{
+  display:flex;gap:10px;
+  margin-bottom:24px;flex-wrap:wrap;
+}
+.tool-pill{
+  background:rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.18);
+  border-radius:30px;
+  padding:6px 16px;
+  font-size:13px;font-weight:600;
+  color:rgba(255,255,255,.85);
+  letter-spacing:.3px;
+}
+
+/* ── DIVISOR ── */
+.divider{
+  height:1px;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.12),transparent);
+  margin-bottom:24px;
+}
+
+/* ── PRICE BLOCK ── */
+.price-block{
+  display:flex;align-items:center;gap:28px;
+  margin-bottom:26px;
+  background:rgba(0,0,0,.2);
+  border:1px solid rgba(245,184,32,.25);
+  border-radius:18px;
+  padding:20px 28px;
+}
+.price-main{
+  display:flex;flex-direction:column;
+}
+.price-label{
+  font-size:11px;font-weight:700;letter-spacing:2px;
+  color:#F5B820;text-transform:uppercase;margin-bottom:2px;
+}
+.price-value{
+  font-size:64px;font-weight:900;line-height:1;
+  color:#F5B820;letter-spacing:-2px;
+}
+.price-value sup{font-size:28px;font-weight:700;vertical-align:super;letter-spacing:0;}
+.price-old{
+  display:flex;flex-direction:column;align-items:center;
+  opacity:.6;
+}
+.price-old-label{font-size:10px;color:#fff;font-weight:600;letter-spacing:1px;text-transform:uppercase;margin-bottom:2px;}
+.price-old-value{
+  font-size:28px;font-weight:700;color:#fff;
+  text-decoration:line-through;letter-spacing:-1px;
+}
+.price-arrow{
+  font-size:28px;color:rgba(255,255,255,.3);font-weight:300;
+}
+.price-info{
+  margin-left:auto;
+  display:flex;flex-direction:column;gap:6px;align-items:flex-end;
+}
+.price-badge{
+  background:linear-gradient(135deg,#27500A,#3B6D11);
+  border:1px solid rgba(122,184,58,.4);
+  border-radius:10px;padding:8px 16px;text-align:center;
+}
+.price-badge-main{font-size:13px;font-weight:800;color:#7AB83A;}
+.price-badge-sub{font-size:10px;color:rgba(255,255,255,.6);font-weight:600;}
+.price-aula{
+  font-size:11px;color:rgba(255,255,255,.5);font-weight:600;text-align:right;
+}
+
+/* ── BENEFÍCIOS ── */
+.benefits{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:12px;margin-bottom:24px;
+}
+.benefit{
+  display:flex;align-items:center;gap:12px;
+  background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.09);
+  border-radius:12px;padding:12px 16px;
+}
+.benefit-icon{
+  width:36px;height:36px;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;font-size:18px;
+  background:rgba(122,184,58,.15);
+}
+.benefit-text{}
+.benefit-title{font-size:13px;font-weight:700;color:#fff;line-height:1.2;}
+.benefit-sub{font-size:11px;color:rgba(255,255,255,.5);font-weight:500;margin-top:1px;}
+
+/* ── GARANTIA BADGE ── */
+.garantia-row{
+  display:flex;align-items:center;gap:14px;
+  margin-bottom:20px;
+}
+.garantia-badge{
+  display:flex;align-items:center;gap:10px;
+  background:rgba(122,184,58,.1);
+  border:1.5px solid rgba(122,184,58,.35);
+  border-radius:12px;padding:10px 18px;
+}
+.garantia-icon{font-size:22px;}
+.garantia-text{font-size:12px;font-weight:700;color:#7AB83A;line-height:1.3;}
+.garantia-sub{font-size:10px;color:rgba(255,255,255,.5);font-weight:500;}
+
+/* ── CTA ── */
+.cta-block{
+  background:linear-gradient(135deg,#1E4008,#2F5C10);
+  border:2px solid rgba(122,184,58,.4);
+  border-radius:16px;padding:18px 24px;
+  display:flex;align-items:center;justify-content:space-between;
+  box-shadow:0 8px 32px rgba(0,0,0,.3);
+}
+.cta-left{}
+.cta-action{font-size:15px;font-weight:900;color:#fff;letter-spacing:-.3px;margin-bottom:4px;}
+.cta-pix{
+  font-size:13px;font-weight:600;
+  color:#F5B820;letter-spacing:.3px;
+}
+.cta-pix span{
+  background:rgba(245,184,32,.12);
+  border:1px solid rgba(245,184,32,.3);
+  border-radius:6px;padding:2px 8px;
+  margin-left:4px;font-family:monospace;font-size:12px;
+}
+.cta-instructor{
+  text-align:right;
+}
+.instructor-name{font-size:13px;font-weight:800;color:#fff;}
+.instructor-desc{font-size:10px;color:rgba(255,255,255,.5);font-weight:500;line-height:1.4;}
+
+/* ── FOOTER ── */
+.footer{
+  margin-top:auto;
+  display:flex;align-items:center;justify-content:space-between;
+  padding-top:12px;
+  border-top:1px solid rgba(255,255,255,.07);
+}
+.footer-brand{font-size:12px;color:rgba(255,255,255,.3);font-weight:600;letter-spacing:1px;}
+.footer-site{font-size:11px;color:rgba(255,255,255,.2);font-family:monospace;}
+</style>
+</head>
+<body>
+<div class="card">
+
+  <!-- Urgência -->
+  <div class="urgency">
+    <div class="urgency-label">Oferta válida</div>
+    <div class="urgency-value">72H</div>
+    <div class="urgency-sub">restantes</div>
+  </div>
+
+  <!-- Header -->
+  <div class="header">
+    <div class="logo-icon">🎓</div>
+    <div class="brand">
+      <div class="brand-name">Pedag<span>IA</span></div>
+      <div class="pre-venda-pill">⚡ Pré-venda exclusiva</div>
+    </div>
+  </div>
+
+  <!-- Slogan -->
+  <div class="slogan">
+    "A IA não substitui professores.<br>Ela os libera para serem mais humanos."
+  </div>
+
+  <!-- Tools -->
+  <div class="tools">
+    <div class="tool-pill">🤖 ChatGPT</div>
+    <div class="tool-pill">💎 Gemini</div>
+    <div class="tool-pill">📓 NotebookLM</div>
+    <div class="tool-pill">🔍 Perplexity</div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- Preço -->
+  <div class="price-block">
+    <div class="price-main">
+      <div class="price-label">Preço de pré-venda</div>
+      <div class="price-value"><sup>R$</sup>100</div>
+    </div>
+    <div class="price-arrow">→</div>
+    <div class="price-old">
+      <div class="price-old-label">Depois</div>
+      <div class="price-old-value">R$150</div>
+    </div>
+    <div class="price-info">
+      <div class="price-badge">
+        <div class="price-badge-main">Economia de R$50</div>
+        <div class="price-badge-sub">só nas próximas 72h</div>
+      </div>
+      <div class="price-aula">1ª aula: 06/06/2026</div>
+    </div>
+  </div>
+
+  <!-- Benefícios -->
+  <div class="benefits">
+    <div class="benefit">
+      <div class="benefit-icon">📚</div>
+      <div class="benefit-text">
+        <div class="benefit-title">Acesso completo ao curso</div>
+        <div class="benefit-sub">ChatGPT, Gemini, NotebookLM e Perplexity na prática</div>
+      </div>
+    </div>
+    <div class="benefit">
+      <div class="benefit-icon">💬</div>
+      <div class="benefit-text">
+        <div class="benefit-title">Comunidade VIP no WhatsApp</div>
+        <div class="benefit-sub">Suporte e troca com outros professores</div>
+      </div>
+    </div>
+    <div class="benefit">
+      <div class="benefit-icon">📄</div>
+      <div class="benefit-text">
+        <div class="benefit-title">Ebook grátis</div>
+        <div class="benefit-sub">50 Prompts Prontos para Professores</div>
+      </div>
+    </div>
+    <div class="benefit">
+      <div class="benefit-icon">🗂️</div>
+      <div class="benefit-text">
+        <div class="benefit-title">Biblioteca de prompts</div>
+        <div class="benefit-sub">Recursos prontos para usar em sala de aula</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Garantia -->
+  <div class="garantia-row">
+    <div class="garantia-badge">
+      <div class="garantia-icon">🛡️</div>
+      <div>
+        <div class="garantia-text">Garantia de 7 dias incondicional</div>
+        <div class="garantia-sub">Não gostou? Devolvemos 100% do seu dinheiro.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="cta-block">
+    <div class="cta-left">
+      <div class="cta-action">Garanta sua vaga agora · Via PIX</div>
+      <div class="cta-pix">Chave:<span>diegooljcounts@gmail.com</span></div>
+    </div>
+    <div class="cta-instructor">
+      <div class="instructor-name">Diego Prado</div>
+      <div class="instructor-desc">Professor · Mestrando UEM<br>Especialista em Robótica Educacional</div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <div class="footer-brand">PEDAGOGIA · 2026</div>
+    <div class="footer-site">prado-diego.github.io/pedagogia</div>
+  </div>
+
+</div>
+</body>
+</html>
