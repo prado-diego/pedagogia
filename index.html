@@ -535,16 +535,36 @@ section { padding: 96px 0; }
 
 /* Testimonials */
 .testi-section { margin-top: 48px; }
-.testi-section h3 { font-size: 1rem; font-weight: 700; color: var(--text); margin-bottom: 4px; }
-.testi-section p { font-size: .82rem; color: var(--sub); margin-bottom: 20px; }
-.testi-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; }
-.testi-img {
-  border-radius: var(--r-sm); overflow: hidden;
-  background: rgba(255,255,255,.5); border: 1px solid rgba(0,0,0,.06);
-  transition: transform .3s;
+.testi-box {
+  border-radius: var(--r); overflow: hidden;
+  background: rgba(255,255,255,.7);
+  backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-lg);
 }
-.testi-img:hover { transform: scale(1.02); }
-.testi-img img { width: 100%; height: auto; display: block; }
+.testi-box-head {
+  padding: 20px 24px 16px;
+  border-bottom: 1px solid rgba(0,0,0,.06);
+}
+.testi-box-head h3 { font-size: 1rem; font-weight: 700; color: var(--text); margin-bottom: 3px; }
+.testi-box-head p  { font-size: .8rem; color: var(--sub); }
+.testi-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+}
+.testi-img {
+  overflow: hidden;
+  border-right: 1px solid rgba(0,0,0,.06);
+  transition: opacity .25s;
+}
+.testi-img:last-child { border-right: none; }
+.testi-img:hover { opacity: .9; }
+.testi-img img {
+  width: 100%; height: 160px;
+  object-fit: cover; object-position: top;
+  display: block;
+}
 
 /* Guarantee */
 .guarantee {
@@ -943,13 +963,16 @@ footer {
 
     <!-- Depoimentos -->
     <div class="testi-section">
-      <h3>O que dizem os professores</h3>
-      <p>Veja quem já transformou sua rotina com o PedagogIA:</p>
-      <div class="testi-grid">
-        <div class="testi-img glass"><img src="depoimento-1.jpg" alt="Depoimento 1" onerror="this.parentElement.style.display='none'"></div>
-        <div class="testi-img glass"><img src="depoimento-2.jpg" alt="Depoimento 2" onerror="this.parentElement.style.display='none'"></div>
-        <div class="testi-img glass"><img src="depoimento-4.jpeg" alt="Depoimento 4" onerror="this.parentElement.style.display='none'"></div>
-        <div class="testi-img glass"><img src="depoimento-3.jpeg" alt="Depoimento 3" onerror="this.parentElement.style.display='none'"></div>
+      <div class="testi-box">
+        <div class="testi-box-head">
+          <h3>O que dizem os professores</h3>
+          <p>Capturas reais de mensagens recebidas após as aulas</p>
+        </div>
+        <div class="testi-grid">
+          <div class="testi-img"><img src="depoimento-1.jpg"  alt="Depoimento 1" onerror="this.parentElement.style.display='none'"></div>
+          <div class="testi-img"><img src="depoimento-2.jpg"  alt="Depoimento 2" onerror="this.parentElement.style.display='none'"></div>
+          <div class="testi-img"><img src="depoimento-4.jpeg" alt="Depoimento 3" onerror="this.parentElement.style.display='none'"></div>
+        </div>
       </div>
     </div>
 
