@@ -1,826 +1,705 @@
 <!DOCTYPE html>
-<html lang="pt-BR" class="scroll-smooth">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🧠 Pedagog<b>IA</b> 💡 </title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <title>PedagogIA — Domine a IA na Educação</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Lato:wght@300;400;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                        mono: ['JetBrains Mono', 'monospace'],
-                    },
-                    colors: {
-                        dark: '#0a0a0a', // Preto profundo estilo palco
-                        darker: '#000000',
-                        primary: '#E62B1E', // Vermelho TED
-                        primaryHover: '#b91c1c', // Vermelho escuro
-                        secondary: '#FFC107', // Amarelo/Dourado alerta
-                        accent: '#FACC15', // Amarelo vibrante
-                    }
-                }
-            }
-        }
-    </script>
     <style>
-        body { background-color: theme('colors.dark'); color: #f3f4f6; }
-        .glass-card {
-            background: rgba(25, 25, 25, 0.6);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(12px);
-        }
-        .text-gradient {
-            background: linear-gradient(135deg, #FFC107, #E62B1E);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .border-gradient {
-            position: relative;
-        }
-        .border-gradient::before {
-            content: "";
-            position: absolute;
-            inset: 0;
-            border-radius: inherit;
-            padding: 2px;
-            background: linear-gradient(135deg, #E62B1E, #FFC107);
-            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-            -webkit-mask-composite: xor;
-            -webkit-mask-composite: exclude;
-            mask-composite: exclude;
-            pointer-events: none;
-        }
-        .btn-primary {
-            background: theme('colors.primary');
-            box-shadow: 0 4px 14px 0 rgba(230, 43, 30, 0.39);
-        }
-        .btn-primary:hover {
-            background: theme('colors.primaryHover');
-            box-shadow: 0 6px 20px rgba(230, 43, 30, 0.23);
-            transform: translateY(-2px);
-        }
-        /* Garantindo legibilidade extra em textos cinzas */
-        .text-gray-400 { color: #9ca3af !important; }
-        .text-gray-300 { color: #d1d5db !important; }
+/* ── Reset ─────────────────────────────────────────── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
 
-        /* Custom Scrollbar para os Depoimentos */
-        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
-        .custom-scrollbar::-webkit-scrollbar-track { background: rgba(255,255,255,0.02); border-radius: 10px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(255,193,7,0.5); }
+:root{
+  --bg:#0E0C08;
+  --bg2:#141210;
+  --bg3:#1B1814;
+  --border:rgba(201,168,76,.18);
+  --border-s:rgba(201,168,76,.45);
+  --gold:#C9A84C;
+  --gold-l:#E8C97A;
+  --gold-d:rgba(201,168,76,.12);
+  --crim:#C41E3A;
+  --crim-l:#E03050;
+  --crim-d:rgba(196,30,58,.15);
+  --cream:#F0E6CC;
+  --cream-m:#A89880;
+  --text:#DDD3BE;
+  --text-m:#7A6A5A;
+  --ff-d:'Cormorant Garamond',Georgia,serif;
+  --ff-b:'Lato',system-ui,sans-serif;
+  --ff-m:'Fira Code',monospace;
+}
+
+body{background:var(--bg);color:var(--text);font-family:var(--ff-b);font-weight:400;line-height:1.7;overflow-x:hidden}
+
+/* grain overlay */
+body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");opacity:.04;pointer-events:none;z-index:9999}
+
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--gold-d);border-radius:2px}
+
+.hidden{display:none!important}
+
+/* ── Layout ─────────────────────────────────────────── */
+.wrap{max-width:1120px;margin:0 auto;padding:0 28px}
+
+/* ── Navbar ─────────────────────────────────────────── */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:22px 0;background:linear-gradient(to bottom,rgba(14,12,8,.96),rgba(14,12,8,0));backdrop-filter:blur(6px);border-bottom:1px solid var(--border)}
+.nav-inner{display:flex;align-items:center;justify-content:space-between}
+.logo{font-family:var(--ff-d);font-weight:700;font-size:1.5rem;color:var(--cream);text-decoration:none;letter-spacing:.02em}
+.logo span{color:var(--gold)}
+.nav-links{display:flex;gap:2.5rem;list-style:none}
+.nav-links a{color:var(--cream-m);text-decoration:none;font-size:.78rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;transition:color .2s}
+.nav-links a:hover{color:var(--gold-l)}
+.btn-nav{display:inline-flex;align-items:center;gap:8px;background:var(--crim);color:#fff;padding:10px 26px;font-size:.75rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;border-radius:1px;transition:all .2s;box-shadow:0 4px 20px rgba(196,30,58,.3)}
+.btn-nav:hover{background:var(--crim-l);transform:translateY(-1px)}
+
+/* ── Hero ───────────────────────────────────────────── */
+#hero{min-height:100vh;display:flex;align-items:center;position:relative;overflow:hidden;padding:130px 0 100px}
+.hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse 70% 55% at 15% 85%,rgba(201,168,76,.07),transparent 60%),radial-gradient(ellipse 55% 45% at 85% 15%,rgba(196,30,58,.07),transparent 60%),var(--bg)}
+.hero-rule{display:block;width:48px;height:2px;background:var(--gold);margin-bottom:28px}
+.hero-badge{display:inline-flex;align-items:center;gap:10px;border:1px solid var(--border-s);background:var(--gold-d);padding:8px 18px;margin-bottom:32px;font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--gold-l)}
+.hero-badge .pulse{width:6px;height:6px;background:var(--gold);border-radius:50%;animation:pls 2s infinite}
+@keyframes pls{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.35;transform:scale(.75)}}
+#hero h1{font-family:var(--ff-d);font-size:clamp(2.8rem,5.5vw,5.2rem);font-weight:600;color:var(--cream);line-height:1.08;margin-bottom:28px;max-width:840px}
+#hero h1 em{font-style:italic;color:var(--gold-l)}
+#hero .lead{font-size:1.1rem;color:var(--cream-m);max-width:580px;margin-bottom:44px;line-height:1.85;font-weight:300}
+#hero .lead strong{color:var(--cream);font-weight:700}
+.hero-ctas{display:flex;flex-wrap:wrap;gap:16px}
+
+/* ── Buttons ─────────────────────────────────────────── */
+.btn-p{display:inline-flex;align-items:center;gap:10px;background:var(--crim);color:#fff;padding:15px 36px;font-size:.85rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;text-decoration:none;border:none;cursor:pointer;border-radius:1px;transition:all .2s;box-shadow:0 4px 24px rgba(196,30,58,.35);font-family:var(--ff-b)}
+.btn-p:hover{background:var(--crim-l);transform:translateY(-2px);box-shadow:0 8px 32px rgba(196,30,58,.4)}
+.btn-g{display:inline-flex;align-items:center;gap:10px;background:transparent;color:var(--cream-m);padding:15px 36px;font-size:.85rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;text-decoration:none;border:1px solid var(--border);cursor:pointer;border-radius:1px;transition:all .2s;font-family:var(--ff-b)}
+.btn-g:hover{border-color:var(--border-s);color:var(--gold-l)}
+
+/* ── Sections ────────────────────────────────────────── */
+section{padding:100px 0}
+.s-label{display:inline-flex;align-items:center;gap:10px;font-size:.68rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin-bottom:14px}
+.s-label::before{content:'';display:inline-block;width:24px;height:1px;background:var(--gold)}
+.s-title{font-family:var(--ff-d);font-size:clamp(2rem,3.8vw,3.2rem);font-weight:600;color:var(--cream);line-height:1.15;margin-bottom:16px}
+.s-sub{color:var(--text-m);font-size:1rem;font-weight:300;max-width:520px}
+.divider{height:1px;background:linear-gradient(to right,transparent,var(--border-s),transparent)}
+
+/* ── Problem ─────────────────────────────────────────── */
+#problema{background:var(--bg2)}
+.pain-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;margin-top:60px}
+.pain-card{background:var(--bg3);padding:40px 32px;border-top:2px solid transparent;transition:border-color .35s,background .35s}
+.pain-card:hover{border-color:var(--gold);background:rgba(201,168,76,.04)}
+.pain-icon{width:44px;height:44px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;color:var(--gold);border:1px solid var(--border);margin-bottom:20px}
+.pain-card h3{font-family:var(--ff-d);font-size:1.35rem;font-weight:600;color:var(--cream);margin-bottom:12px}
+.pain-card p{color:var(--text-m);font-size:.9rem;line-height:1.8;font-weight:300}
+
+/* ── Method ──────────────────────────────────────────── */
+#metodo{background:var(--bg)}
+.method-grid{display:grid;grid-template-columns:1fr 1fr;gap:72px;align-items:center;margin-top:60px}
+.steps{display:flex;flex-direction:column;gap:28px}
+.step{display:flex;gap:20px;padding-bottom:28px;border-bottom:1px solid var(--border)}
+.step:last-child{border-bottom:none;padding-bottom:0}
+.step-letter{width:44px;height:44px;min-width:44px;border:1px solid var(--border-s);display:flex;align-items:center;justify-content:center;font-family:var(--ff-d);font-size:1.4rem;font-weight:700;color:var(--gold);background:var(--gold-d)}
+.step h4{font-family:var(--ff-d);font-size:1.1rem;font-weight:600;color:var(--cream);margin-bottom:5px}
+.step p{color:var(--text-m);font-size:.88rem;line-height:1.7;font-weight:300}
+/* Terminal */
+.terminal{background:#070605;border:1px solid var(--border);overflow:hidden}
+.t-bar{display:flex;align-items:center;justify-content:space-between;padding:12px 18px;border-bottom:1px solid var(--border);background:var(--bg2)}
+.t-dots{display:flex;gap:7px}
+.t-dots span{width:10px;height:10px;border-radius:50%}
+.t-r{background:#FF5F57}.t-y{background:#FEBC2E}.t-g{background:#28C840}
+.t-tag{font-family:var(--ff-m);font-size:.68rem;color:var(--text-m);letter-spacing:.06em}
+.t-body{padding:28px;font-family:var(--ff-m);font-size:.76rem;line-height:1.85;color:#9A8D6A}
+.t-body .tp{color:var(--gold);font-weight:500}
+.t-body .tk{color:var(--crim-l);font-weight:500}
+.t-body .tr{color:#82B07A}
+.t-body .td{color:var(--text-m);font-style:italic}
+
+/* ── Tools ───────────────────────────────────────────── */
+#ferramentas{background:var(--bg2)}
+.tools-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px;margin-top:60px}
+.tool-card{background:var(--bg3);padding:40px;position:relative;overflow:hidden;transition:background .3s}
+.tool-card::before{content:'';position:absolute;top:0;left:0;width:3px;height:0;background:var(--gold);transition:height .4s ease}
+.tool-card:hover::before{height:100%}
+.tool-logo{width:46px;height:46px;border-radius:50%;overflow:hidden;margin-bottom:18px;border:1px solid var(--border)}
+.tool-logo img{width:100%;height:100%;object-fit:cover}
+.tool-tag{font-size:.65rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:6px;display:block}
+.tool-card h3{font-family:var(--ff-d);font-size:1.5rem;font-weight:600;color:var(--cream);margin-bottom:12px}
+.tool-card p{color:var(--text-m);font-size:.88rem;line-height:1.78;font-weight:300;margin-bottom:14px}
+.tool-feats{list-style:none;display:flex;flex-direction:column;gap:7px}
+.tool-feats li{display:flex;align-items:center;gap:10px;font-size:.82rem;color:var(--text)}
+.tool-feats li::before{content:'';width:14px;height:1px;background:var(--gold);flex-shrink:0}
+
+/* ── About ───────────────────────────────────────────── */
+#sobre{background:var(--bg)}
+.about-grid{display:grid;grid-template-columns:5fr 7fr;gap:72px;align-items:center;margin-top:60px}
+.about-photo{position:relative}
+.about-photo img.mp{width:100%;border:1px solid var(--border);filter:grayscale(15%)}
+.about-photo img.sp{position:absolute;bottom:-22px;right:-22px;width:130px;height:130px;object-fit:cover;border:3px solid var(--bg);filter:grayscale(15%)}
+.about-deco{position:absolute;top:-10px;left:-10px;width:56px;height:56px;border-top:2px solid var(--gold);border-left:2px solid var(--gold)}
+.about-text p{color:var(--text-m);font-size:1rem;line-height:1.85;font-weight:300;margin-bottom:18px}
+.about-text p strong{color:var(--cream);font-weight:700}
+.creds{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:28px;padding-top:28px;border-top:1px solid var(--border)}
+.cred{display:flex;gap:14px;align-items:flex-start}
+.cred i{color:var(--gold);margin-top:3px;font-size:.95rem}
+.cred b{display:block;color:var(--cream);font-size:.85rem;margin-bottom:2px}
+.cred span{color:var(--text-m);font-size:.78rem;font-weight:300}
+
+/* ── Quote ───────────────────────────────────────────── */
+#quote{background:var(--crim);padding:80px 0;position:relative;overflow:hidden}
+#quote::before{content:'\201C';position:absolute;top:-70px;left:30px;font-family:var(--ff-d);font-size:22rem;color:rgba(255,255,255,.06);line-height:1;pointer-events:none}
+#quote blockquote{font-family:var(--ff-d);font-size:clamp(1.6rem,3.2vw,2.6rem);font-weight:500;font-style:italic;color:#fff;line-height:1.35;text-align:center;max-width:800px;margin:0 auto}
+#quote cite{display:block;text-align:center;margin-top:22px;font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.55);font-style:normal}
+
+/* ── Offer ───────────────────────────────────────────── */
+#oferta{background:var(--bg2)}
+.offer-wrap{display:grid;grid-template-columns:1fr 1fr 5fr;gap:40px;align-items:start;margin-top:60px}
+
+/* Left offer card */
+.offer-card{background:var(--bg3);border:1px solid var(--border);position:relative}
+.offer-card-head{padding:24px 32px;border-bottom:1px solid var(--border);background:var(--gold-d);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+.offer-card-head h3{font-family:var(--ff-d);font-size:1.4rem;font-weight:600;color:var(--cream)}
+.pv-badge{display:inline-flex;align-items:center;gap:7px;background:var(--crim);color:#fff;padding:5px 14px;font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase}
+.pv-badge .pulse{width:5px;height:5px;background:#fff;border-radius:50%;animation:pls 1.5s infinite}
+.offer-card-body{padding:32px}
+
+/* Price */
+.price-block{margin-bottom:28px}
+.price-old{font-size:.78rem;color:var(--text-m);text-decoration:line-through;margin-bottom:4px}
+.price-row{display:flex;align-items:baseline;gap:4px;margin-bottom:4px}
+.price-cur{font-family:var(--ff-d);font-size:1.4rem;font-weight:500;color:var(--cream-m)}
+.price-num{font-family:var(--ff-d);font-size:4.5rem;font-weight:700;color:var(--cream);line-height:1;letter-spacing:-.02em}
+.price-note{font-size:.72rem;color:var(--gold);font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-top:4px}
+.price-after{display:flex;align-items:center;gap:7px;font-size:.78rem;color:var(--text-m);margin-top:6px}
+.price-after i{color:var(--crim-l);font-size:.7rem}
+
+/* Countdown */
+.cd-box{background:var(--bg);border:1px solid var(--border);padding:18px 22px;margin-bottom:28px}
+.cd-lbl{font-size:.62rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text-m);margin-bottom:12px}
+.cd-units{display:flex;align-items:center;gap:8px}
+.cd-unit{text-align:center;min-width:52px}
+.cd-num{font-family:var(--ff-d);font-size:2.5rem;font-weight:700;color:var(--cream);line-height:1;display:block}
+.cd-tag{font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text-m);margin-top:3px;display:block}
+.cd-sep{font-family:var(--ff-d);font-size:1.8rem;color:var(--gold);font-weight:700;align-self:flex-start;margin-top:2px}
+
+/* Features */
+.offer-feats{list-style:none;display:flex;flex-direction:column;gap:12px;margin-bottom:28px;padding-bottom:28px;border-bottom:1px solid var(--border)}
+.offer-feats li{display:flex;align-items:flex-start;gap:12px;font-size:.88rem;color:var(--text);line-height:1.55}
+.offer-feats li i{color:var(--gold);font-size:.75rem;margin-top:4px;flex-shrink:0}
+.offer-feats li.hl{color:var(--cream);font-weight:700}
+.offer-feats li.hl i{color:var(--crim-l)}
+
+/* Date */
+.date-block{background:rgba(201,168,76,.07);border:1px solid var(--border-s);padding:16px 20px;margin-bottom:28px;display:flex;align-items:center;gap:14px}
+.date-block i{color:var(--gold);font-size:1.1rem;flex-shrink:0}
+.date-block strong{color:var(--cream);display:block;font-size:.85rem;margin-bottom:2px}
+.date-block span{color:var(--text-m);font-size:.78rem}
+
+/* PIX column */
+.pix-col{background:var(--bg3);border:1px solid var(--border);position:sticky;top:100px}
+.pix-head{padding:22px 26px;border-bottom:1px solid var(--border);background:var(--gold-d)}
+.pix-head h3{font-family:var(--ff-d);font-size:1.2rem;font-weight:600;color:var(--cream);margin-bottom:3px}
+.pix-head p{font-size:.78rem;color:var(--text-m);font-weight:300}
+.pix-body{padding:24px}
+.qr-wrap{display:flex;justify-content:center;margin-bottom:18px}
+.qr-frame{background:#fff;padding:10px;border:2px solid var(--gold);display:inline-block}
+.pix-box{background:var(--bg);border:1px solid var(--border);padding:12px 14px;margin-bottom:10px;text-align:center}
+.pix-box .lbl{font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text-m);margin-bottom:5px;display:block}
+.pix-box .val{font-family:var(--ff-m);font-size:.74rem;color:var(--cream);word-break:break-all;line-height:1.5}
+.btn-copy{background:transparent;border:none;cursor:pointer;font-size:.67rem;color:var(--gold);letter-spacing:.07em;text-transform:uppercase;font-weight:700;display:flex;align-items:center;gap:5px;padding:4px 0;font-family:var(--ff-b);transition:color .2s}
+.btn-copy:hover{color:var(--gold-l)}
+
+/* Confirm btn */
+.btn-confirm{width:100%;background:var(--gold);color:var(--bg);border:none;padding:15px;font-size:.82rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:all .2s;font-family:var(--ff-b);display:flex;align-items:center;justify-content:center;gap:9px;border-radius:0;margin-top:4px}
+.btn-confirm:hover{background:var(--gold-l)}
+.confirm-hint{font-size:.67rem;color:var(--text-m);text-align:center;margin-top:7px}
+
+/* Form */
+.f-header{padding:12px 0 14px;margin-bottom:14px;border-bottom:1px solid var(--border)}
+.f-header p{font-family:var(--ff-d);font-size:.98rem;color:var(--cream);margin-bottom:3px}
+.f-header span{font-size:.72rem;color:var(--text-m)}
+.field{margin-bottom:12px}
+.field label{display:block;font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-m);margin-bottom:5px}
+.field input{width:100%;background:var(--bg);border:1px solid var(--border);padding:11px 13px;color:var(--cream);font-size:.85rem;font-family:var(--ff-b);outline:none;transition:border-color .2s;border-radius:0}
+.field input:focus{border-color:var(--gold)}
+.field input::placeholder{color:var(--text-m)}
+.btn-submit{width:100%;background:var(--gold);color:var(--bg);border:none;padding:14px;font-size:.82rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:all .2s;font-family:var(--ff-b);display:flex;align-items:center;justify-content:center;gap:9px;border-radius:0;margin-top:4px}
+.btn-submit:hover{background:var(--gold-l)}
+.btn-submit:disabled{opacity:.6;cursor:not-allowed}
+
+/* Access area */
+.access-msg{background:rgba(46,139,87,.1);border:1px solid rgba(46,139,87,.3);padding:12px 14px;text-align:center;margin-bottom:10px}
+.access-msg p{font-size:.8rem;color:#5BBA8A;font-weight:700;margin-bottom:2px}
+.access-msg span{font-size:.7rem;color:var(--text-m)}
+.btn-whatsapp{display:flex;align-items:center;justify-content:center;gap:10px;background:#25D366;color:#fff;padding:14px;font-size:.82rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;text-decoration:none;transition:background .2s;margin-bottom:8px}
+.btn-whatsapp:hover{background:#1fb558}
+.spam-note{font-size:.65rem;color:var(--text-m);text-align:center}
+
+/* Testimonials column */
+.testi-col{display:flex;flex-direction:column}
+.testi-col h3{font-family:var(--ff-d);font-size:1.15rem;color:var(--cream);margin-bottom:4px}
+.testi-sub{font-size:.78rem;color:var(--text-m);margin-bottom:20px}
+.testi-scroll{display:flex;flex-direction:column;gap:10px;max-height:640px;overflow-y:auto;padding-right:4px}
+.testi-scroll::-webkit-scrollbar{width:3px}
+.testi-scroll::-webkit-scrollbar-thumb{background:var(--border)}
+.testi-img{border:1px solid var(--border);overflow:hidden;background:var(--bg3)}
+.testi-img img{width:100%;height:auto;display:block;opacity:.88;transition:opacity .3s}
+.testi-img img:hover{opacity:1}
+
+/* Guarantee */
+.guarantee{display:flex;align-items:center;gap:22px;background:var(--bg3);border:1px solid var(--border);padding:26px 30px;margin-top:36px}
+.g-icon{width:52px;height:52px;border:1px solid var(--border-s);display:flex;align-items:center;justify-content:center;font-size:1.3rem;color:var(--gold);flex-shrink:0}
+.guarantee h4{font-family:var(--ff-d);font-size:1.15rem;color:var(--cream);margin-bottom:5px}
+.guarantee p{font-size:.85rem;color:var(--text-m);font-weight:300}
+
+/* ── Footer ──────────────────────────────────────────── */
+footer{background:var(--bg);border-top:1px solid var(--border);padding:44px 0 36px;text-align:center}
+.f-logo{font-family:var(--ff-d);font-size:1.35rem;font-weight:600;color:var(--cream-m);margin-bottom:14px;display:block}
+.f-logo span{color:var(--gold)}
+.f-disc{font-size:.7rem;color:var(--text-m);max-width:560px;margin:0 auto 14px;line-height:1.7;font-weight:300}
+.f-copy{font-size:.75rem;color:var(--text-m)}
+
+/* ── Responsive ──────────────────────────────────────── */
+@media(max-width:960px){
+  .pain-grid,.tools-grid{grid-template-columns:1fr}
+  .method-grid,.about-grid{grid-template-columns:1fr;gap:48px}
+  .offer-wrap{grid-template-columns:1fr}
+  .creds{grid-template-columns:1fr}
+  .nav-links{display:none}
+  .pix-col{position:static}
+}
+@media(max-width:600px){
+  .hero-ctas{flex-direction:column}
+  .about-photo img.sp{width:100px;height:100px}
+  .guarantee{flex-direction:column;text-align:center}
+}
     </style>
 </head>
-<body class="antialiased selection:bg-primary selection:text-white">
+<body>
 
-    <!-- Navbar -->
-    <nav class="fixed w-full z-50 glass-card border-b border-white/5 transition-all duration-300">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-20">
-                <div class="flex items-center gap-2">
-                    <i class="fa-solid fa-lightbulb text-secondary text-2xl"></i>
-                    <span class="font-bold text-xl tracking-tight text-white">Pedagog<span class="text-primary">IA</span></span>
-                </div>
-                <div class="hidden md:flex space-x-8">
-                    <a href="#metodo" class="text-gray-300 hover:text-white hover:text-primary transition font-medium">O Método</a>
-                    <a href="#ferramentas" class="text-gray-300 hover:text-white hover:text-primary transition font-medium">Ferramentas</a>
-                    <a href="#sobre" class="text-gray-300 hover:text-white hover:text-primary transition font-medium">Quem sou eu</a>
-                </div>
-                <div>
-                    <a href="#oferta" class="btn-primary text-white px-6 py-2.5 rounded-full font-semibold transition-all text-sm">
-                        Garantir Vaga
-                    </a>
-                </div>
-            </div>
+<!-- ── Navbar ────────────────────────────────────────────────── -->
+<nav>
+  <div class="wrap nav-inner">
+    <a href="#" class="logo">Pedagog<span>IA</span></a>
+    <ul class="nav-links">
+      <li><a href="#metodo">O Metodo</a></li>
+      <li><a href="#ferramentas">Ferramentas</a></li>
+      <li><a href="#sobre">Quem sou eu</a></li>
+    </ul>
+    <a href="#oferta" class="btn-nav"><i class="fa-solid fa-bolt"></i> Garantir Vaga</a>
+  </div>
+</nav>
+
+<!-- ── Hero ─────────────────────────────────────────────────── -->
+<section id="hero">
+  <div class="hero-bg"></div>
+  <div class="wrap" style="position:relative;z-index:1">
+    <div class="hero-badge"><span class="pulse"></span> Pre-Venda · Do fundamental ao ensino superior</div>
+    <span class="hero-rule"></span>
+    <h1>A IA nao substitui professores,<br>ela nos libera para sermos<br><em>mais humanos.</em></h1>
+    <p class="lead">Domine o ChatGPT, Gemini e NotebookLM para criar aulas envolventes, avaliacoes precisas e <strong>recuperar horas do seu fim de semana.</strong></p>
+    <div class="hero-ctas">
+      <a href="#oferta" class="btn-p"><i class="fa-solid fa-power-off"></i> Quero explorar a IA na educacao</a>
+      <a href="#metodo" class="btn-g"><i class="fa-solid fa-play" style="color:var(--gold)"></i> Ver como funciona</a>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ── Problem ──────────────────────────────────────────────── -->
+<section id="problema">
+  <div class="wrap">
+    <div class="s-label">A realidade da sala de aula</div>
+    <h2 class="s-title">O que ninguem te contou<br>na faculdade</h2>
+    <p class="s-sub">Voce ama ensinar, mas a burocracia esta sugando sua energia.</p>
+    <div class="pain-grid">
+      <div class="pain-card">
+        <div class="pain-icon"><i class="fa-solid fa-calendar-xmark"></i></div>
+        <h3>Finais de Semana Perdidos</h3>
+        <p>Horas elaborando avaliacoes, adaptando materiais e criando roteiros do zero ao inves de descansar.</p>
+      </div>
+      <div class="pain-card">
+        <div class="pain-icon"><i class="fa-solid fa-battery-quarter"></i></div>
+        <h3>Sobrecarga Mental</h3>
+        <p>Turmas heterogeneas exigem abordagens diferentes e planejar tudo sozinho gera um desgaste absurdo.</p>
+      </div>
+      <div class="pain-card">
+        <div class="pain-icon"><i class="fa-solid fa-robot"></i></div>
+        <h3>Medo de Ficar para Tras</h3>
+        <p>A tecnologia avanca rapido. Ver os alunos usando ferramentas que voce ainda nao domina gera inseguranca.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ── Method ────────────────────────────────────────────────── -->
+<section id="metodo">
+  <div class="wrap">
+    <div class="method-grid">
+      <div>
+        <div class="s-label">O metodo</div>
+        <h2 class="s-title">80% da resposta depende do prompt <em style="font-style:italic;color:var(--gold-l)">perfeito.</em></h2>
+        <p class="s-sub" style="margin-bottom:40px">A <strong style="color:var(--cream)">Estrutura P-CEP</strong> transforma qualquer professor em um especialista em prompts pedagogicos.</p>
+        <div class="steps">
+          <div class="step"><div class="step-letter">P</div><div><h4>Persona</h4><p>Defina o papel exato que a IA deve assumir (ex: Professor de Matematica do 6 ano).</p></div></div>
+          <div class="step"><div class="step-letter" style="color:var(--crim-l);border-color:rgba(196,30,58,.45);background:var(--crim-d)">C</div><div><h4>Contexto</h4><p>Forneca o cenario real dos seus alunos e o desafio atual de aprendizagem.</p></div></div>
+          <div class="step"><div class="step-letter">E</div><div><h4>Especificacao</h4><p>Detalhe restricoes, tom de voz, linguagem e regras que a IA deve obedecer.</p></div></div>
+          <div class="step"><div class="step-letter" style="color:var(--crim-l);border-color:rgba(196,30,58,.45);background:var(--crim-d)">P</div><div><h4>Produto</h4><p>O formato final pratico e imediato que voce precisa para usar na aula.</p></div></div>
         </div>
-    </nav>
-
-    <!-- Hero Section -->
-    <section class="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden bg-darker">
-        <!-- Background Effects Minimalistas -->
-        <div class="absolute top-[10%] left-[50%] -translate-x-1/2 w-[800px] h-[400px] bg-primary/10 rounded-full blur-[150px] pointer-events-none"></div>
-
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
-            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-card border border-white/10 mb-8">
-                <span class="flex h-2 w-2 rounded-full bg-secondary animate-pulse"></span>
-                <span class="text-sm font-semibold text-gray-200 uppercase tracking-wider">Do fundamental ao ensino superior</span>
-            </div>
-            
-            <h1 class="text-4xl md:text-6xl lg:text-7xl font-extrabold tracking-tight mb-8 leading-tight text-white">
-                A IA não substitui professores, <br class="hidden lg:block">
-                ela nos libera para sermos <span class="text-gradient">mais humanos.</span>
-            </h1>
-            
-            <p class="mt-4 text-xl text-gray-300 max-w-3xl mx-auto mb-12 leading-relaxed font-light">
-                Descubra como dominar o ChatGPT, Gemini e NotebookLM para criar aulas envolventes, avaliações precisas e <strong class="text-white font-bold border-b-2 border-primary">reduzir consideravelmente</strong> o seu tempo de planejamento.
-            </p>
-            
-            <div class="flex flex-col sm:flex-row justify-center gap-6">
-                <a href="#oferta" class="btn-primary text-white px-8 py-4 rounded-xl font-bold text-lg transition-all flex items-center justify-center gap-3">
-                    <i class="fa-solid fa-power-off"></i> Quero explorar melhor os recursos da IA
-                </a>
-                <a href="#metodo" class="glass-card hover:bg-white/10 text-white px-8 py-4 rounded-xl font-semibold text-lg transition-all flex items-center justify-center gap-3 border border-white/10">
-                    <i class="fa-solid fa-play text-secondary"></i> Ver como funciona
-                </a>
-            </div>
+      </div>
+      <div class="terminal">
+        <div class="t-bar">
+          <div class="t-dots"><span class="t-r"></span><span class="t-y"></span><span class="t-g"></span></div>
+          <span class="t-tag">Terminal P-CEP em Acao</span>
+          <span style="font-size:.65rem;color:var(--bg);background:var(--gold);padding:3px 10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;font-family:var(--ff-b)">Resultado imediato</span>
         </div>
-    </section>
-
-    <!-- Problem Section (Agitação da Dor) -->
-    <section class="py-20 bg-dark border-y border-white/5">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-16">
-                <h2 class="text-3xl md:text-4xl font-bold mb-4 text-white">A realidade que ninguém te conta na faculdade</h2>
-                <p class="text-gray-400 text-lg">Você ama ensinar, mas a burocracia está sugando sua energia.</p>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div class="bg-black/40 border border-white/5 p-8 rounded-2xl text-center hover:border-primary/50 transition-colors duration-300">
-                    <div class="w-16 h-16 bg-red-900/30 text-primary rounded-full flex items-center justify-center mx-auto mb-6 text-2xl">
-                        <i class="fa-solid fa-calendar-xmark"></i>
-                    </div>
-                    <h3 class="text-xl font-bold mb-3 text-white">Finais de Semana Perdidos</h3>
-                    <p class="text-gray-400 leading-relaxed">Horas intermináveis elaborando avaliações, adaptando materiais e criando roteiros do zero ao invés de descansar.</p>
-                </div>
-                <div class="bg-black/40 border border-white/5 p-8 rounded-2xl text-center hover:border-secondary/50 transition-colors duration-300">
-                    <div class="w-16 h-16 bg-yellow-900/30 text-secondary rounded-full flex items-center justify-center mx-auto mb-6 text-2xl">
-                        <i class="fa-solid fa-battery-quarter"></i>
-                    </div>
-                    <h3 class="text-xl font-bold mb-3 text-white">Sobrecarga Mental</h3>
-                    <p class="text-gray-400 leading-relaxed">Turmas heterogêneas exigem abordagens diferentes, e planejar tudo isso sozinho gera um desgaste absurdo.</p>
-                </div>
-                <div class="bg-black/40 border border-white/5 p-8 rounded-2xl text-center hover:border-primary/50 transition-colors duration-300">
-                    <div class="w-16 h-16 bg-red-900/30 text-primary rounded-full flex items-center justify-center mx-auto mb-6 text-2xl">
-                        <i class="fa-solid fa-robot"></i>
-                    </div>
-                    <h3 class="text-xl font-bold mb-3 text-white">O Medo de Ficar para Trás</h3>
-                    <p class="text-gray-400 leading-relaxed">A tecnologia avança rápido. Ver os alunos usando ferramentas que você ainda não domina gera insegurança na sala.</p>
-                </div>
-            </div>
+        <div class="t-body">
+          <p><span class="tp">User:</span></p>
+          <p style="margin-top:8px"><span class="tk">[P]</span> Assuma o papel de professor de matematica do ensino fundamental II, 6 ano.</p>
+          <p><span class="tk">[C]</span> Os alunos estao com dificuldade em fracoes antes da prova bimestral.</p>
+          <p><span class="tk">[E]</span> Linguagem clara, sem jargoes, com problemas do cotidiano.</p>
+          <p><span class="tk">[P]</span> Crie 15 questoes de multipla escolha prontas para impressao A4.</p>
+          <br>
+          <p style="border-left:2px solid var(--border-s);padding-left:16px;background:rgba(255,255,255,.02)">
+            <span class="tr">IA:</span> Entendido! Aqui esta a atividade de revisao sobre Fracoes:<br><br>
+            <span class="tr">ATIVIDADE DE REVISAO — MAT 6 ANO</span><br><br>
+            <span style="color:var(--text-m)">1. Joao comprou uma pizza com 8 pedacos e comeu 3. Qual fracao representa o que ele comeu?</span><br>
+            <span style="color:var(--text-m);margin-left:12px">A) 3/5  B) 3/8  C) 5/8  D) 8/3</span><br><br>
+            <span class="td">[gerando mais 14 questoes + gabarito em 4 segundos...]</span>
+          </p>
         </div>
-    </section>
+      </div>
+    </div>
+  </div>
+</section>
 
-    <!-- The Method Section -->
-    <section id="metodo" class="py-24 relative bg-darker">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex flex-col lg:flex-row items-center gap-16">
-                <div class="lg:w-1/2">
-                    <h2 class="text-3xl md:text-5xl font-bold mb-6 leading-tight text-white">80% da resposta depende do <span class="text-gradient">Prompt perfeito.</span></h2>
-                    <p class="text-gray-300 text-lg mb-8 leading-relaxed">
-                        Esqueça "perguntar coisas pro ChatGPT". O método PedagogIA foca na <strong>Estrutura P-CEP</strong>. Você vai aprender a dar comandos profissionais para que a IA gere conteúdos pedagógicos com precisão cirúrgica.
-                    </p>
-                    
-                    <div class="space-y-6">
-                        <div class="flex gap-4 items-start">
-                            <div class="w-12 h-12 rounded-lg bg-primary/20 text-primary flex items-center justify-center font-bold text-xl shrink-0 border border-primary/30">P</div>
-                            <div>
-                                <h4 class="font-bold text-lg text-white">Persona</h4>
-                                <p class="text-gray-400">Defina o papel exato que a IA deve assumir (ex: Professor de Matemática do 6º ano).</p>
-                            </div>
-                        </div>
-                        <div class="flex gap-4 items-start">
-                            <div class="w-12 h-12 rounded-lg bg-secondary/20 text-secondary flex items-center justify-center font-bold text-xl shrink-0 border border-secondary/30">C</div>
-                            <div>
-                                <h4 class="font-bold text-lg text-white">Contexto</h4>
-                                <p class="text-gray-400">Forneça o cenário real dos seus alunos e o desafio atual de aprendizagem.</p>
-                            </div>
-                        </div>
-                        <div class="flex gap-4 items-start">
-                            <div class="w-12 h-12 rounded-lg bg-primary/20 text-primary flex items-center justify-center font-bold text-xl shrink-0 border border-primary/30">E</div>
-                            <div>
-                                <h4 class="font-bold text-lg text-white">Especificação</h4>
-                                <p class="text-gray-400">Detalhe as restrições, tom de voz, linguagem e regras que a IA deve obedecer.</p>
-                            </div>
-                        </div>
-                        <div class="flex gap-4 items-start">
-                            <div class="w-12 h-12 rounded-lg bg-secondary/20 text-secondary flex items-center justify-center font-bold text-xl shrink-0 border border-secondary/30">P</div>
-                            <div>
-                                <h4 class="font-bold text-lg text-white">Produto</h4>
-                                <p class="text-gray-400">O formato final prático e imediato que você precisa receber para usar na aula.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Terminal Code Block -->
-                <div class="lg:w-1/2 w-full">
-                    <div class="bg-[#0D0D0D] border border-white/10 rounded-2xl p-6 relative overflow-hidden shadow-2xl">
-                        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary to-secondary"></div>
-                        <div class="flex justify-between items-center mb-4 border-b border-white/10 pb-4">
-                            <div class="flex items-center gap-2">
-                                <i class="fa-solid fa-terminal text-gray-500"></i>
-                                <span class="font-mono text-sm text-gray-400">Terminal P-CEP em Ação</span>
-                            </div>
-                            <span class="text-xs text-black font-bold bg-secondary px-3 py-1 rounded-full">Resultado Imediato</span>
-                        </div>
-                        <div class="font-mono text-sm space-y-6">
-                            <div>
-                                <p class="text-gray-300 leading-relaxed">
-                                    <span class="text-secondary font-bold text-base">User:</span><br>
-                                    <span class="text-primary font-semibold">[P]</span> Assuma o papel de um professor de matemática de ensino fundamental II em uma turma de 6º ano.<br>
-                                    <span class="text-primary font-semibold">[C]</span> Os alunos estão com dificuldade em frações e precisam de uma revisão antes da prova bimestral.<br>
-                                    <span class="text-primary font-semibold">[E]</span> A linguagem deve ser clara e direta, sem jargões complexos, focando em problemas do dia a dia e situações reais.<br>
-                                    <span class="text-primary font-semibold">[P]</span> Crie uma atividade de revisão composta de 15 questões de múltipla escolha formatada e pronta para impressão em papel A4.
-                                </p>
-                            </div>
-                            <div class="pl-4 border-l-2 border-white/20 bg-white/5 p-4 rounded-r-lg">
-                                <p class="text-gray-200"><span class="text-primary font-bold">IA:</span> Olá, Professor! Entendido. Aqui está a atividade de revisão sobre Frações focada no cotidiano, pronta para impressão A4:</p>
-                                <p class="text-gray-300 mt-3 font-bold">ATIVIDADE DE REVISÃO - MATEMÁTICA (6º ANO)</p>
-                                <p class="text-gray-400 mt-2"><strong>1.</strong> João comprou uma pizza dividida em 8 pedaços iguais e comeu 3 pedaços. Qual fração representa a quantidade de pizza que João comeu?</p>
-                                <p class="text-gray-400 ml-4">A) 3/5<br>B) 3/8<br>C) 5/8<br>D) 8/3</p>
-                                <p class="text-gray-400 mt-2"><strong>2.</strong> Maria quer fazer um bolo e a receita pede 1/2 xícara de açúcar. Se ela quiser fazer o dobro da receita, quanto de açúcar precisará?</p>
-                                <p class="text-gray-500 mt-2 italic">[Gerando mais 13 questões perfeitamente formatadas + Gabarito do Professor em 4 segundos...]</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+<div class="divider"></div>
+
+<!-- ── Tools ─────────────────────────────────────────────────── -->
+<section id="ferramentas">
+  <div class="wrap">
+    <div class="s-label">Ferramentas</div>
+    <h2 class="s-title">Seu novo arsenal pedagogico</h2>
+    <p class="s-sub">Domine os assistentes mais avancados com foco total em educacao e produtividade.</p>
+    <div class="tools-grid">
+      <div class="tool-card">
+        <div class="tool-logo"><img src="gptlogo.png" alt="ChatGPT"></div>
+        <span class="tool-tag">Preparacao e Avaliacao</span>
+        <h3>ChatGPT</h3>
+        <p>Gere rascunhos, resolva bloqueios criativos, crie exercicios com niveis de dificuldade ajustaveis e rubricas precisas em segundos.</p>
+        <ul class="tool-feats"><li>Roteiros de aula P-CEP</li><li>Ajuste de tom e complexidade</li></ul>
+      </div>
+      <div class="tool-card">
+        <div class="tool-logo"><img src="geminilogo.webp" alt="Gemini"></div>
+        <span class="tool-tag" style="color:#7BAAF7">Integracao Total</span>
+        <h3>Google Gemini</h3>
+        <p>Exporte direto para Docs ou Sheets. Analise tabelas de notas e gere relatorios de desempenho integrados ao ecossistema Google.</p>
+        <ul class="tool-feats"><li>Recurso Canvas nao-linear</li><li>Analise de dados e notas</li></ul>
+      </div>
+      <div class="tool-card">
+        <div class="tool-logo"><img src="notebooklmlogo.jpg" alt="NotebookLM"></div>
+        <span class="tool-tag" style="color:#6BBF8E">Seus materiais, sua IA</span>
+        <h3>NotebookLM</h3>
+        <p>Faca upload dos seus PDFs e livros. A IA respondera com base <strong style="color:var(--cream)">estritamente</strong> no seu material, eliminando alucinacoes.</p>
+        <ul class="tool-feats"><li>Transformacao em podcast</li><li>Geracao de flashcards</li></ul>
+      </div>
+      <div class="tool-card">
+        <div class="tool-logo"><img src="perplexitylogo.avif" alt="Perplexity"></div>
+        <span class="tool-tag" style="color:#B0A0C0">Pesquisa Academica</span>
+        <h3>Perplexity</h3>
+        <p>Va alem do buscador comum. Pesquisa academica profunda com referencias bibliograficas reais e fontes verificaveis.</p>
+        <ul class="tool-feats"><li>Fontes confiaveis e links</li><li>Base para artigos e mestrado</li></ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ── About ─────────────────────────────────────────────────── -->
+<section id="sobre">
+  <div class="wrap">
+    <div class="about-grid">
+      <div class="about-photo">
+        <div class="about-deco"></div>
+        <img src="perfil2.png" alt="Diego Prado" class="mp">
+        <img src="perfil1.png" alt="Diego Prado" class="sp">
+      </div>
+      <div class="about-text">
+        <div class="s-label">Quem sou eu</div>
+        <h2 class="s-title">Do chao de escola para a pratica docente <em style="font-style:italic;color:var(--gold-l)">do futuro.</em></h2>
+        <p>Chega de ouvir formulas magicas de quem nunca enfrentou uma sala com 40 alunos. <strong>Eu sou professor.</strong></p>
+        <p>Minha missao nao e te dar mais trabalho com tecnologia, mas usar a IA para recuperar seu tempo. Vou te ensinar pesquisa academica de ponta aplicada ao chao da escola — etico, pratico e feito por quem sabe que seu tempo livre e seu bem mais precioso.</p>
+        <div class="creds">
+          <div class="cred"><i class="fa-solid fa-graduation-cap"></i><div><b>Historia</b><span>Graduado pela Unioeste, atuante na rede publica e privada.</span></div></div>
+          <div class="cred"><i class="fa-solid fa-book-bookmark"></i><div><b>Tecnologias Educacionais</b><span>Mestrando pela Universidade Estadual de Maringa (UEM).</span></div></div>
+          <div class="cred"><i class="fa-solid fa-network-wired"></i><div><b>IA e Dados</b><span>Graduando em Inteligencia Artificial aplicada.</span></div></div>
+          <div class="cred"><i class="fa-solid fa-chalkboard-user"></i><div><b>Educacao Especial</b><span>Especialista em Metodologia e Robotica Educacional.</span></div></div>
         </div>
-    </section>
+      </div>
+    </div>
+  </div>
+</section>
 
-    <!-- Tools Grid Section -->
-    <section id="ferramentas" class="py-24 bg-dark">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-16">
-                <h2 class="text-3xl md:text-5xl font-bold mb-4 text-white">O seu Novo Arsenal Pedagógico</h2>
-                <p class="text-gray-400 text-lg max-w-2xl mx-auto">Domine os assistentes mais avançados do mercado com um olhar focado puramente na educação e produtividade.</p>
-            </div>
+<!-- ── Quote ─────────────────────────────────────────────────── -->
+<section id="quote">
+  <div class="wrap">
+    <blockquote>"O futuro da educacao publica e humano, potencializado pela tecnologia."</blockquote>
+    <cite>— Diego Prado · PedagogIA</cite>
+  </div>
+</section>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <!-- Tool 1 -->
-                <div class="bg-black/40 border border-white/5 p-8 rounded-2xl hover:border-primary/40 transition-all duration-300 group">
-                    <div class="flex items-center gap-4 mb-6">
-                        <div class="w-12 h-12 rounded-full bg-white flex items-center justify-center overflow-hidden">
-                            <img src="gptlogo.png" alt="ChatGPT Logo" class="w-full h-full object-cover">
-                        </div>
-                        <div>
-                            <h3 class="text-2xl font-bold text-white">ChatGPT</h3>
-                            <span class="text-sm font-medium text-primary uppercase tracking-wider">Preparação e Avaliação</span>
-                        </div>
-                    </div>
-                    <p class="text-gray-400 mb-6 leading-relaxed">Seu assistente de escrita. Gere rascunhos, resolva o bloqueio criativo, crie exercícios com níveis de dificuldade ajustáveis e rubricas de avaliação precisas em segundos.</p>
-                    <ul class="text-sm text-gray-300 space-y-3">
-                        <li class="flex items-center"><i class="fa-solid fa-check text-secondary mr-3"></i> Roteiros de Aula PCEP</li>
-                        <li class="flex items-center"><i class="fa-solid fa-check text-secondary mr-3"></i> Ajuste de Tom e Complexidade</li>
-                    </ul>
-                </div>
+<!-- ── Offer ─────────────────────────────────────────────────── -->
+<section id="oferta">
+  <div class="wrap">
+    <div class="s-label">Pre-Venda Exclusiva</div>
+    <h2 class="s-title">Aproveite a pre-venda,<br>garanta sua vaga e receba o ebook <em style="color:var(--gold-l);font-style:italic">gratis.</em></h2>
 
-                <!-- Tool 2 -->
-                <div class="bg-black/40 border border-white/5 p-8 rounded-2xl hover:border-blue-500/40 transition-all duration-300 group">
-                    <div class="flex items-center gap-4 mb-6">
-                        <div class="w-12 h-12 rounded-full bg-white flex items-center justify-center overflow-hidden">
-                            <img src="geminilogo.webp" alt="Google Gemini Logo" class="w-full h-full object-cover">
-                        </div>
-                        <div>
-                            <h3 class="text-2xl font-bold text-white">Google Gemini</h3>
-                            <span class="text-sm font-medium text-blue-400 uppercase tracking-wider">Integração Total</span>
-                        </div>
-                    </div>
-                    <p class="text-gray-400 mb-6 leading-relaxed">Perfeito para quem já usa o ecossistema Google. Exporte direto para o Docs ou Sheets. Entenda como analisar tabelas de notas e gerar relatórios de desempenho.</p>
-                    <ul class="text-sm text-gray-300 space-y-3">
-                        <li class="flex items-center"><i class="fa-solid fa-check text-secondary mr-3"></i> Recurso Canvas (Não-linear)</li>
-                        <li class="flex items-center"><i class="fa-solid fa-check text-secondary mr-3"></i> Análise de Dados e Notas</li>
-                    </ul>
-                </div>
+    <div class="offer-wrap">
 
-                <!-- Tool 3 -->
-                <div class="bg-black/40 border border-white/5 p-8 rounded-2xl hover:border-green-500/40 transition-all duration-300 group">
-                    <div class="flex items-center gap-4 mb-6">
-                        <div class="w-12 h-12 rounded-full bg-white flex items-center justify-center overflow-hidden">
-                            <img src="notebooklmlogo.jpg" alt="NotebookLM Logo" class="w-full h-full object-cover">
-                        </div>
-                        <div>
-                            <h3 class="text-2xl font-bold text-white">NotebookLM</h3>
-                            <span class="text-sm font-medium text-green-400 uppercase tracking-wider">Seus Materiais, Sua IA</span>
-                        </div>
-                    </div>
-                    <p class="text-gray-400 mb-6 leading-relaxed">Faça upload dos seus PDFs, artigos e livros da escola. A IA responderá com base <span class="text-white font-semibold">estritamente</span> no seu material, eliminando "alucinações".</p>
-                    <ul class="text-sm text-gray-300 space-y-3">
-                        <li class="flex items-center"><i class="fa-solid fa-check text-secondary mr-3"></i> Transformação em Podcast (Audio)</li>
-                        <li class="flex items-center"><i class="fa-solid fa-check text-secondary mr-3"></i> Geração de Flashcards automáticos</li>
-                    </ul>
-                </div>
-
-                <!-- Tool 4 -->
-                <div class="bg-black/40 border border-white/5 p-8 rounded-2xl hover:border-gray-400/50 transition-all duration-300 group">
-                    <div class="flex items-center gap-4 mb-6">
-                        <div class="w-12 h-12 rounded-full bg-white flex items-center justify-center overflow-hidden border border-gray-600">
-                            <img src="perplexitylogo.avif" alt="Perplexity Logo" class="w-full h-full object-cover">
-                        </div>
-                        <div>
-                            <h3 class="text-2xl font-bold text-white">Perplexity</h3>
-                            <span class="text-sm font-medium text-gray-400 uppercase tracking-wider">Pesquisa Acadêmica</span>
-                        </div>
-                    </div>
-                    <p class="text-gray-400 mb-6 leading-relaxed">Vá além do buscador comum. Ferramenta de pesquisa acadêmica profunda que entrega respostas com referências bibliográficas reais e fontes verificáveis.</p>
-                    <ul class="text-sm text-gray-300 space-y-3">
-                        <li class="flex items-center"><i class="fa-solid fa-check text-secondary mr-3"></i> Fontes Confiáveis e Links</li>
-                        <li class="flex items-center"><i class="fa-solid fa-check text-secondary mr-3"></i> Base para artigos e mestrado</li>
-                    </ul>
-                </div>
-            </div>
+      <!-- Offer card -->
+      <div class="offer-card">
+        <div class="offer-card-head">
+          <h3>PedagogIA — Pre-Venda</h3>
+          <div class="pv-badge"><span class="pulse"></span> 72 horas</div>
         </div>
-    </section>
-
-    <!-- Authority/Mentor Section -->
-    <section id="sobre" class="py-24 relative overflow-hidden bg-darker">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex flex-col lg:flex-row items-center gap-16">
-                <!-- Composição de Imagens -->
-                <div class="lg:w-5/12 relative flex justify-center">
-                    
-                    <div class="relative w-full max-w-sm">
-                        <!-- Imagem Principal (Falando/TED Style) -->
-                        <img src="perfil2.png" alt="Diego Mentor" class="w-full rounded-2xl shadow-2xl border border-white/10 relative z-20">
-                        
-                        <!-- Imagem Secundária (Sorriso/Close) -->
-                        <img src="perfil1.png" alt="Diego Sorrindo" class="absolute -bottom-10 -right-8 w-40 h-40 md:w-48 md:h-48 rounded-xl shadow-[0_0_30px_rgba(0,0,0,0.8)] border-4 border-darker object-cover z-30">
-                        
-                        <!-- Grafismo TED -->
-                        <div class="absolute -top-6 -left-6 w-24 h-24 border-t-4 border-l-4 border-primary z-10"></div>
-                        <div class="absolute -bottom-6 -left-6 w-32 h-32 bg-primary/20 rounded-full blur-2xl z-0"></div>
-                    </div>
-                </div>
-
-                <div class="lg:w-7/12 mt-12 lg:mt-0">
-                    <h2 class="text-3xl md:text-5xl font-bold mb-6 text-white">Do chão de escola para a <span class="text-gradient">prática docente do futuro.</span></h2>
-                    
-                    <div class="space-y-6 text-gray-300 text-lg leading-relaxed mb-10">
-                        <p>
-                            Chega de ouvir fórmulas mágicas de quem nunca enfrentou uma sala com 40 alunos!
-                        <p> <strong>Eu sou professor.</strong> </p>
-                        </p>
-                        <p>
-                            Minha missão não é te dar mais trabalho com tecnologia, mas usar a IA para roubar seu tempo de volta. Vou te ensinar a pesquisa acadêmica de ponta aplicada ao chão da escola. Ético, prático e feito por quem, como você, sabe que o seu tempo livre é o seu bem mais precioso.
-                        </p>
-                    </div>
-
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 bg-black/50 p-6 rounded-2xl border border-white/5">
-                        <div class="flex items-start gap-4">
-                            <i class="fa-solid fa-graduation-cap text-primary mt-1 text-xl"></i>
-                            <div>
-                                <span class="text-white font-bold block">História</span>
-                                <span class="text-gray-400 text-sm">Graduado pela Unioeste, atuante na rede pública e privada.</span>
-                            </div>
-                        </div>
-                        <div class="flex items-start gap-4">
-                            <i class="fa-solid fa-book-bookmark text-secondary mt-1 text-xl"></i>
-                            <div>
-                                <span class="text-white font-bold block">Tecnologias Educacionais</span>
-                                <span class="text-gray-400 text-sm">Mestrando pela Universidade Estadual de Maringá (UEM).</span>
-                            </div>
-                        </div>
-                        <div class="flex items-start gap-4">
-                            <i class="fa-solid fa-network-wired text-primary mt-1 text-xl"></i>
-                            <div>
-                                <span class="text-white font-bold block">IA e Dados</span>
-                                <span class="text-gray-400 text-sm">Graduando em Inteligência Artificial aplicada.</span>
-                            </div>
-                        </div>
-                        <div class="flex items-start gap-4">
-                            <i class="fa-solid fa-chalkboard-user text-secondary mt-1 text-xl"></i>
-                            <div>
-                                <span class="text-white font-bold block">Educação Especial & Robótica</span>
-                                <span class="text-gray-400 text-sm">Especialista em Metodologia e Robótica Educacional.</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+        <div class="offer-card-body">
+          <div class="price-block">
+            <p class="price-old">Apos a pre-venda: R$ 150,00</p>
+            <div class="price-row">
+              <span class="price-cur">R$</span>
+              <span class="price-num">100</span>
+              <span class="price-cur">,00</span>
             </div>
+            <p class="price-note">Preco de pre-venda · pagamento unico</p>
+            <p class="price-after"><i class="fa-solid fa-circle-exclamation"></i> Valor sobe para R$ 150 ao fim do prazo</p>
+          </div>
+
+          <div class="cd-box">
+            <p class="cd-lbl">Oferta expira em</p>
+            <div class="cd-units">
+              <div class="cd-unit"><span class="cd-num" id="cd-h">72</span><span class="cd-tag">horas</span></div>
+              <span class="cd-sep">:</span>
+              <div class="cd-unit"><span class="cd-num" id="cd-m">00</span><span class="cd-tag">min</span></div>
+              <span class="cd-sep">:</span>
+              <div class="cd-unit"><span class="cd-num" id="cd-s">00</span><span class="cd-tag">seg</span></div>
+            </div>
+          </div>
+
+          <ul class="offer-feats">
+            <li class="hl"><i class="fa-solid fa-star"></i> Acesso completo ao curso PedagogIA</li>
+            <li class="hl"><i class="fa-solid fa-star"></i> Comunidade VIP no WhatsApp</li>
+            <li class="hl"><i class="fa-solid fa-gift"></i> Ebook <em>50 Prompts Prontos para Professores</em> enviado por e-mail (GRATIS)</li>
+            <li><i class="fa-solid fa-check"></i> Biblioteca de Prompts</li>
+            <li><i class="fa-solid fa-check"></i> Atualizacoes de conteudo</li>
+          </ul>
+
+          <div class="date-block">
+            <i class="fa-solid fa-calendar-check"></i>
+            <div>
+              <strong>Primeira aula: 1 sabado de junho (06/06/2026)</strong>
+              <span>Apos fechar a turma, confirmamos a melhor data no grupo.</span>
+            </div>
+          </div>
         </div>
-    </section>
+      </div>
 
-    <!-- Quote Break (Estilo TED) -->
-    <section class="py-20 bg-primary relative overflow-hidden">
-        <div class="absolute inset-0 bg-black/20"></div>
-        <div class="max-w-4xl mx-auto px-4 text-center relative z-10">
-            <h2 class="text-3xl md:text-5xl font-bold text-white leading-tight">
-                "O futuro da educação pública é humano, <br>potencializado pela tecnologia."
-            </h2>
-            <div class="w-16 h-1 bg-secondary mx-auto mt-8"></div>
+      <!-- PIX column -->
+      <div class="pix-col">
+        <div class="pix-head">
+          <h3>Pague via PIX</h3>
+          <p>R$ 100,00 · chave e-mail</p>
         </div>
-    </section>
+        <div class="pix-body">
+          <div class="qr-wrap">
+            <div class="qr-frame"><div id="qrcode"></div></div>
+          </div>
+          <div class="pix-box">
+            <span class="lbl">Chave PIX (e-mail)</span>
+            <span class="val">diegooljcounts@gmail.com</span>
+            <button class="btn-copy" onclick="copiarChave()"><i class="fa-regular fa-copy"></i> <span id="t-chave">Copiar chave</span></button>
+          </div>
+          <div class="pix-box" style="margin-bottom:16px">
+            <span class="lbl">Codigo PIX (copia e cola)</span>
+            <span class="val" id="pix-payload" style="font-size:.6rem"></span>
+            <button class="btn-copy" onclick="copiarPayload()"><i class="fa-regular fa-copy"></i> <span id="t-payload">Copiar codigo PIX</span></button>
+          </div>
 
-    <!-- Pricing / Offer Section -->
-    <section id="oferta" class="py-24 relative bg-dark">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-16">
-                <h2 class="text-3xl md:text-5xl font-bold mb-4 text-white">Sua Paz de Espírito na Sala de Aula</h2>
-                <p class="text-gray-400 text-lg">Aproveite a pre-venda, garanta sua vaga e receba o ebook <strong class="text-secondary">gratis</strong>.</p>
+          <!-- Step 1: confirm button -->
+          <button id="btn-confirm" class="btn-confirm" onclick="confirmarPagamento()">
+            <i class="fa-solid fa-circle-check"></i> Ja realizei o pagamento
+          </button>
+          <p class="confirm-hint" id="hint-confirm">Clique apos confirmar o pagamento via PIX.</p>
+
+          <!-- Step 2: form -->
+          <div id="form-wrap" class="hidden">
+            <div class="f-header">
+              <p>Preencha seus dados para liberar o acesso</p>
+              <span>O ebook sera enviado ao seu e-mail.</span>
             </div>
+            <form id="form-aluno" onsubmit="submeterForm(event)">
+              <div class="field"><label>Nome completo</label><input type="text" id="f-nome" required placeholder="Seu nome"></div>
+              <div class="field"><label>E-mail</label><input type="email" id="f-email" required placeholder="seu@email.com"></div>
+              <div class="field"><label>WhatsApp</label><input type="tel" id="f-wpp" required placeholder="(00) 00000-0000"></div>
+              <button type="submit" id="btn-submit" class="btn-submit"><i class="fa-solid fa-unlock"></i> Liberar meu acesso</button>
+            </form>
+          </div>
 
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
-
-                <!-- Coluna Pré-Venda (2/3) -->
-                <div class="lg:col-span-2">
-                    <div class="border-gradient rounded-3xl p-8 relative bg-darker shadow-[0_0_50px_rgba(230,43,30,0.2)]">
-                        <!-- Badge topo -->
-                        <div class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-gradient-to-r from-primary to-secondary text-darker font-bold px-6 py-1.5 rounded-full text-sm uppercase tracking-wide whitespace-nowrap">
-                            Oferta de Pre-Venda — Apenas nas Proximas 72h
-                        </div>
-
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-4">
-
-                            <!-- Esquerda: info + preco + features -->
-                            <div>
-                                <h3 class="text-2xl font-bold text-white mb-2">PedagogIA — Pre-Venda</h3>
-                                <p class="text-gray-400 mb-5">Acesso completo ao curso + <strong class="text-secondary">Ebook gratis com 50 Prompts prontos para professores.</strong></p>
-
-                                <!-- Countdown -->
-                                <div class="bg-black/60 border border-primary/30 rounded-2xl p-4 mb-5">
-                                    <p class="text-xs text-gray-400 uppercase tracking-wider mb-3 text-center font-semibold">Oferta expira em:</p>
-                                    <div class="flex justify-center gap-3" id="countdown">
-                                        <div class="text-center">
-                                            <div id="cd-hours" class="text-4xl font-extrabold text-white leading-none">72</div>
-                                            <div class="text-xs text-gray-500 uppercase mt-1">horas</div>
-                                        </div>
-                                        <div class="text-4xl font-extrabold text-primary self-center leading-none">:</div>
-                                        <div class="text-center">
-                                            <div id="cd-minutes" class="text-4xl font-extrabold text-white leading-none">00</div>
-                                            <div class="text-xs text-gray-500 uppercase mt-1">min</div>
-                                        </div>
-                                        <div class="text-4xl font-extrabold text-primary self-center leading-none">:</div>
-                                        <div class="text-center">
-                                            <div id="cd-seconds" class="text-4xl font-extrabold text-white leading-none">00</div>
-                                            <div class="text-xs text-gray-500 uppercase mt-1">seg</div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Preco -->
-                                <div class="mb-5 pb-5 border-b border-white/10">
-                                    <div class="inline-block bg-primary/20 border border-primary/30 text-primary text-xs font-bold px-3 py-1 rounded-full mb-2 uppercase tracking-wide">
-                                        Preco de Pre-Venda
-                                    </div>
-                                    <div>
-                                        <span class="text-xl font-bold text-gray-400">R$</span>
-                                        <span class="text-6xl font-extrabold text-white">100</span>
-                                        <span class="text-xl font-bold text-gray-400">,00</span>
-                                    </div>
-                                    <p class="text-gray-500 text-sm mt-2 flex items-center gap-1">
-                                        <i class="fa-solid fa-circle-exclamation text-primary"></i>
-                                        Apos as 72h o valor sobe para <strong class="text-white ml-1">R$ 150,00</strong>
-                                    </p>
-                                </div>
-
-                                <!-- Features -->
-                                <ul class="space-y-3">
-                                    <li class="flex items-start gap-3">
-                                        <i class="fa-solid fa-star text-secondary mt-0.5 shrink-0"></i>
-                                        <span class="text-white font-medium">Acesso completo ao curso PedagogIA</span>
-                                    </li>
-                                    <li class="flex items-start gap-3">
-                                        <i class="fa-solid fa-star text-secondary mt-0.5 shrink-0"></i>
-                                        <span class="text-white font-medium">Comunidade VIP no WhatsApp</span>
-                                    </li>
-                                    <li class="flex items-start gap-3">
-                                        <i class="fa-solid fa-gift text-primary mt-0.5 shrink-0"></i>
-                                        <span class="text-white font-medium">Ebook <em>50 Prompts Prontos para Professores</em> <span class="text-secondary font-bold">(GRATIS)</span></span>
-                                    </li>
-                                    <li class="flex items-start gap-3">
-                                        <i class="fa-solid fa-check text-gray-500 mt-0.5 shrink-0"></i>
-                                        <span class="text-gray-300">Biblioteca de Prompts</span>
-                                    </li>
-                                    <li class="flex items-start gap-3">
-                                        <i class="fa-solid fa-check text-gray-500 mt-0.5 shrink-0"></i>
-                                        <span class="text-gray-300">Atualizacoes de conteudo</span>
-                                    </li>
-                                </ul>
-
-                                <!-- Data da aula -->
-                                <div class="bg-secondary/10 border border-secondary/30 rounded-xl p-4 mt-4">
-                                    <p class="text-xs text-secondary uppercase tracking-wider font-bold mb-1">
-                                        <i class="fa-solid fa-calendar-check mr-1"></i> Data da Primeira Aula
-                                    </p>
-                                    <p class="text-white font-semibold text-sm">1º sabado de junho de 2026 <span class="text-secondary">(06/06/2026)</span></p>
-                                    <p class="text-gray-500 text-xs mt-1">Apos fechar a turma, organizaremos a melhor data no grupo.</p>
-                                </div>
-                            </div>
-
-                            <!-- Direita: QR Code + Chave PIX + Botao WhatsApp -->
-                            <div class="flex flex-col items-center justify-center">
-                                <p class="text-sm text-gray-300 mb-3 text-center font-semibold uppercase tracking-wide">
-                                    <i class="fa-solid fa-qrcode text-secondary mr-1"></i> Pague via PIX — R$ 100,00
-                                </p>
-
-                                <!-- QR Code container -->
-                                <div class="bg-white p-3 rounded-2xl mb-4 shadow-[0_0_30px_rgba(255,193,7,0.2)]">
-                                    <div id="qrcode"></div>
-                                </div>
-
-                                <!-- Chave PIX -->
-                                <div class="w-full bg-black/60 border border-white/10 rounded-xl p-4 mb-4 text-center">
-                                    <p class="text-xs text-gray-500 uppercase tracking-wider mb-1">Chave PIX (e-mail)</p>
-                                    <p class="text-white font-mono text-sm font-bold break-all">diegooljcounts@gmail.com</p>
-                                    <button onclick="copiarChavePix()" class="mt-2 text-xs text-secondary hover:text-yellow-300 transition-colors flex items-center gap-1 mx-auto">
-                                        <i class="fa-regular fa-copy"></i>
-                                        <span id="btn-copy-text">Copiar chave</span>
-                                    </button>
-                                </div>
-
-                                <div class="w-full bg-black/60 border border-secondary/20 rounded-xl p-3 mb-3 text-center">
-                                    <p class="text-xs text-gray-400 mb-1">Codigo PIX (Copia e Cola)</p>
-                                    <p id="pix-payload" class="text-white font-mono text-xs break-all leading-relaxed"></p>
-                                    <button onclick="copiarPixPayload()" class="mt-2 text-xs text-secondary hover:text-yellow-300 transition-colors flex items-center gap-1 mx-auto">
-                                        <i class="fa-regular fa-copy"></i>
-                                        <span id="btn-copy-payload">Copiar codigo PIX</span>
-                                    </button>
-                                </div>
-
-                                <!-- Passo 1: botao inicial -->
-                                <button id="btn-confirmar-pix" onclick="confirmarPagamento()"
-                                   class="w-full bg-secondary hover:bg-yellow-400 text-darker py-4 rounded-xl font-extrabold text-center transition-all flex items-center justify-center gap-3 text-base shadow-[0_4px_20px_rgba(255,193,7,0.4)]">
-                                    <i class="fa-solid fa-circle-check text-xl"></i> Ja realizei o pagamento via PIX
-                                </button>
-                                <p id="hint-confirmar" class="text-xs text-gray-600 mt-2 text-center">
-                                    Clique acima para liberar o acesso ao grupo e ao ebook.
-                                </p>
-
-                                <!-- Passo 2: formulario de cadastro (oculto) -->
-                                <div id="form-cadastro" class="hidden w-full mt-3">
-                                    <div class="bg-black/70 border border-white/10 rounded-2xl p-5">
-                                        <p class="text-white font-bold text-sm text-center mb-1">Preencha seus dados para liberar o acesso</p>
-                                        <p class="text-xs text-gray-500 text-center mb-4">Seus dados ficam registrados com seguranca.</p>
-                                        <form id="form-aluno" onsubmit="submeterFormulario(event)" class="space-y-3">
-                                            <div>
-                                                <label class="text-xs text-gray-400 mb-1 block">Nome completo</label>
-                                                <input type="text" id="campo-nome" required
-                                                    class="w-full bg-black/60 border border-white/10 rounded-lg px-3 py-2.5 text-white text-sm placeholder-gray-600 focus:outline-none focus:border-secondary/60"
-                                                    placeholder="Seu nome completo">
-                                            </div>
-                                            <div>
-                                                <label class="text-xs text-gray-400 mb-1 block">E-mail</label>
-                                                <input type="email" id="campo-email" required
-                                                    class="w-full bg-black/60 border border-white/10 rounded-lg px-3 py-2.5 text-white text-sm placeholder-gray-600 focus:outline-none focus:border-secondary/60"
-                                                    placeholder="seu@email.com">
-                                            </div>
-                                            <div>
-                                                <label class="text-xs text-gray-400 mb-1 block">WhatsApp</label>
-                                                <input type="tel" id="campo-whatsapp" required
-                                                    class="w-full bg-black/60 border border-white/10 rounded-lg px-3 py-2.5 text-white text-sm placeholder-gray-600 focus:outline-none focus:border-secondary/60"
-                                                    placeholder="(00) 00000-0000">
-                                            </div>
-                                            <button type="submit" id="btn-submit-form"
-                                                class="w-full bg-secondary hover:bg-yellow-400 text-darker py-3.5 rounded-xl font-extrabold transition-all flex items-center justify-center gap-2 text-sm">
-                                                <i class="fa-solid fa-unlock"></i> Liberar meu acesso
-                                            </button>
-                                        </form>
-                                    </div>
-                                </div>
-
-                                <!-- Passo 3: acesso liberado apos formulario enviado -->
-                                <div id="area-pos-pagamento" class="hidden w-full mt-3 space-y-3">
-                                    <div class="bg-green-500/10 border border-green-500/30 rounded-xl px-4 py-3 text-center">
-                                        <p class="text-green-400 text-sm font-bold mb-1">Cadastro confirmado! Bem-vindo(a) ao PedagogIA.</p>
-                                        <p class="text-gray-400 text-xs">
-                                            <i class="fa-solid fa-envelope text-secondary mr-1"></i>
-                                            O ebook foi enviado para <strong id="email-confirmado" class="text-white"></strong>
-                                        </p>
-                                    </div>
-                                    <a href="https://chat.whatsapp.com/GXP02lLDeeEAd3hQUFCzI1?mode=gi_t" target="_blank" rel="noopener"
-                                       class="w-full bg-green-600 hover:bg-green-500 text-white py-3.5 rounded-xl font-bold text-center transition-all flex items-center justify-center gap-3 text-base shadow-[0_4px_20px_rgba(34,197,94,0.3)]">
-                                        <i class="fa-brands fa-whatsapp text-xl"></i> Entrar no Grupo Agora
-                                    </a>
-                                    <p class="text-xs text-gray-600 text-center">Verifique sua caixa de entrada (e o spam) caso o e-mail demore alguns minutos.</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Coluna Lateral de Depoimentos (Ocupa 1/3 do espaço) -->
-                <div class="lg:col-span-1 bg-black/40 border border-white/5 rounded-3xl p-6 h-full max-h-[720px] flex flex-col mt-8 lg:mt-0">
-                    <div class="mb-6">
-                        <h3 class="text-xl font-bold text-white flex items-center gap-3">
-                            <i class="fa-solid fa-comments text-secondary text-2xl"></i> O que dizem
-                        </h3>
-                        <p class="text-gray-400 text-sm mt-2">Professores que já transformaram suas rotinas:</p>
-                    </div>
-                    
-                    <!-- Container com scroll (Custom Scrollbar) -->
-                    <div class="flex-1 overflow-y-auto custom-scrollbar pr-3 space-y-4">
-                        <!-- Imagem 1 (Sem cortes, largura total natural) -->
-                        <div class="rounded-xl overflow-hidden border border-white/10 bg-[#1a1a1a] relative group flex items-center justify-center min-h-[100px]">
-                            <div class="absolute text-center p-4 z-0">
-                                <i class="fa-brands fa-whatsapp text-green-500 text-3xl mb-2"></i>
-                                <p class="text-gray-500 text-xs">depoimento-1.jpg</p>
-                            </div>
-                            <img src="depoimento-1.jpg" alt="Depoimento 1" class="relative block w-full h-auto opacity-90 group-hover:opacity-100 transition-opacity duration-300 z-10" onerror="this.style.opacity='0'">
-                        </div>
-                        
-                        <!-- Imagem 2 -->
-                        <div class="rounded-xl overflow-hidden border border-white/10 bg-[#1a1a1a] relative group flex items-center justify-center min-h-[100px]">
-                            <div class="absolute text-center p-4 z-0">
-                                <i class="fa-brands fa-whatsapp text-green-500 text-3xl mb-2"></i>
-                                <p class="text-gray-500 text-xs">depoimento-2.jpg</p>
-                            </div>
-                            <img src="depoimento-2.jpg" alt="Depoimento 2" class="relative block w-full h-auto opacity-90 group-hover:opacity-100 transition-opacity duration-300 z-10" onerror="this.style.opacity='0'">
-                        </div>
-
-                        <!-- Imagem 4 (Movida para a 3ª posição) -->
-                        <div class="rounded-xl overflow-hidden border border-white/10 bg-[#1a1a1a] relative group flex items-center justify-center min-h-[100px]">
-                            <div class="absolute text-center p-4 z-0">
-                                <i class="fa-brands fa-whatsapp text-green-500 text-3xl mb-2"></i>
-                                <p class="text-gray-500 text-xs">depoimento-4.jpg</p>
-                            </div>
-                            <img src="depoimento-4.jpeg" alt="Depoimento 4" class="relative block w-full h-auto opacity-90 group-hover:opacity-100 transition-opacity duration-300 z-10" onerror="this.style.opacity='0'">
-                        </div>
-
-                        <!-- Imagem 3 (Vertical - Movida para o final) -->
-                        <div class="rounded-xl overflow-hidden border border-white/10 bg-[#1a1a1a] relative group flex items-center justify-center min-h-[100px]">
-                            <div class="absolute text-center p-4 z-0">
-                                <i class="fa-brands fa-whatsapp text-green-500 text-3xl mb-2"></i>
-                                <p class="text-gray-500 text-xs">depoimento-3.jpg</p>
-                            </div>
-                            <img src="depoimento-3.jpeg" alt="Depoimento 3" class="relative block w-full h-auto opacity-90 group-hover:opacity-100 transition-opacity duration-300 z-10" onerror="this.style.opacity='0'">
-                        </div>
-                    </div>
-                </div>
-
+          <!-- Step 3: access links -->
+          <div id="access-wrap" class="hidden">
+            <div class="access-msg">
+              <p>Acesso liberado! Bem-vindo(a) ao PedagogIA.</p>
+              <span>Ebook enviado para <strong id="email-conf" style="color:var(--cream)"></strong></span>
             </div>
-
-            <!-- Guarantee -->
-            <div class="mt-16 flex items-center justify-center gap-6 border border-white/5 bg-black/40 p-6 rounded-2xl w-fit mx-auto">
-                <div class="w-16 h-16 rounded-full bg-secondary/10 text-secondary flex items-center justify-center text-3xl shrink-0">
-                    <i class="fa-solid fa-shield-halved"></i>
-                </div>
-                <div>
-                    <h4 class="font-bold text-lg text-white">Garantia Incondicional de 7 Dias</h4>
-                    <p class="text-gray-400 text-sm">Acesse o curso, teste os prompts. Se não economizar seu tempo, devolvo 100% do seu dinheiro. O risco é meu.</p>
-                </div>
-            </div>
+            <a href="https://chat.whatsapp.com/GXP02lLDeeEAd3hQUFCzI1?mode=gi_t" target="_blank" rel="noopener" class="btn-whatsapp">
+              <i class="fa-brands fa-whatsapp" style="font-size:1.2rem"></i> Entrar no Grupo Agora
+            </a>
+            <p class="spam-note">Verifique sua caixa de entrada e o spam caso o e-mail demore.</p>
+          </div>
         </div>
-    </section>
+      </div>
 
-    <!-- Footer -->
-    <footer class="py-12 border-t border-white/10 text-center text-gray-500 bg-darker">
-        <div class="max-w-7xl mx-auto px-4">
-            <div class="flex items-center justify-center gap-2 mb-6">
-                <i class="fa-solid fa-lightbulb text-secondary"></i>
-                <span class="font-bold text-lg text-gray-300">Pedagog<span class="text-primary">IA</span></span>
-            </div>
-            <p class="mb-4 text-xs max-w-2xl mx-auto">Este site não faz parte do Google LLC, OpenAI, ou Meta Platforms Inc. Além disso, esse site não é endossado por nenhuma dessas empresas em nenhum aspecto. Todas as marcas registradas pertencem aos seus respectivos proprietários.</p>
-            <p class="text-sm font-semibold">&copy; 2026 PedagogIA com Diego. Todos os direitos reservados.</p>
+      <!-- Testimonials column -->
+      <div class="testi-col">
+        <h3>O que dizem</h3>
+        <p class="testi-sub">Professores que ja transformaram suas rotinas:</p>
+        <div class="testi-scroll">
+          <div class="testi-img"><img src="depoimento-1.jpg" alt="Depoimento 1" onerror="this.parentElement.style.display='none'"></div>
+          <div class="testi-img"><img src="depoimento-2.jpg" alt="Depoimento 2" onerror="this.parentElement.style.display='none'"></div>
+          <div class="testi-img"><img src="depoimento-4.jpeg" alt="Depoimento 4" onerror="this.parentElement.style.display='none'"></div>
+          <div class="testi-img"><img src="depoimento-3.jpeg" alt="Depoimento 3" onerror="this.parentElement.style.display='none'"></div>
         </div>
-    </footer>
+      </div>
 
+    </div>
 
-    <script>
-        // ── Gerador de Payload PIX (EMVCo / Banco Central do Brasil) ─
-        function gerarPixPayload() {
-            function tlv(id, value) {
-                return id + String(value.length).padStart(2, '0') + value;
-            }
-            function crc16(str) {
-                var crc = 0xFFFF;
-                for (var i = 0; i < str.length; i++) {
-                    crc ^= str.charCodeAt(i) << 8;
-                    for (var j = 0; j < 8; j++) {
-                        crc = (crc & 0x8000) ? ((crc << 1) ^ 0x1021) : (crc << 1);
-                        crc &= 0xFFFF;
-                    }
-                }
-                return crc.toString(16).toUpperCase().padStart(4, '0');
-            }
+    <div class="guarantee">
+      <div class="g-icon"><i class="fa-solid fa-shield-halved"></i></div>
+      <div>
+        <h4>Garantia Incondicional de 7 Dias</h4>
+        <p>Acesse o curso, teste os prompts. Se nao economizar seu tempo, devolvo 100% do seu dinheiro. O risco e meu.</p>
+      </div>
+    </div>
+  </div>
+</section>
 
-            var chave  = 'diegooljcounts@gmail.com';
-            var nome   = 'Diego';
-            var cidade = 'MARINGA';
-            var valor  = '100.00';
-            var txid   = 'PEDAGOGIA';
+<!-- ── Footer ─────────────────────────────────────────────────── -->
+<footer>
+  <div class="wrap">
+    <span class="f-logo">Pedagog<span>IA</span></span>
+    <p class="f-disc">Este site nao faz parte do Google LLC, OpenAI, ou Meta Platforms Inc. Todas as marcas registradas pertencem aos seus respectivos proprietarios.</p>
+    <p class="f-copy">&copy; 2026 PedagogIA com Diego. Todos os direitos reservados.</p>
+  </div>
+</footer>
 
-            var mai  = tlv('00', 'BR.GOV.BCB.PIX') + tlv('01', chave);
-            var addf = tlv('05', txid);
+<!-- ── Scripts ────────────────────────────────────────────────── -->
+<script>
+var APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz5zwU9r8A6A5wcKpOzxUMVioRkBJh4Jev6zgSTGrpbXW9lWlxnKVW8Jrze9Gk4-60h4Q/exec";
 
-            var payload =
-                tlv('00', '01') +
-                tlv('26', mai)  +
-                tlv('52', '0000') +
-                tlv('53', '986') +
-                tlv('54', valor) +
-                tlv('58', 'BR') +
-                tlv('59', nome) +
-                tlv('60', cidade) +
-                tlv('62', addf) +
-                '6304';
-
-            return payload + crc16(payload);
+// ── PIX Payload (EMVCo / Banco Central) ──────────────────────
+function gerarPix() {
+    function tlv(id, v) { return id + String(v.length).padStart(2,"0") + v; }
+    function crc16(s) {
+        var c = 0xFFFF;
+        for (var i = 0; i < s.length; i++) {
+            c ^= s.charCodeAt(i) << 8;
+            for (var j = 0; j < 8; j++) { c = (c & 0x8000) ? ((c << 1) ^ 0x1021) : (c << 1); c &= 0xFFFF; }
         }
+        return c.toString(16).toUpperCase().padStart(4,"0");
+    }
+    var mai = tlv("00","BR.GOV.BCB.PIX") + tlv("01","diegooljcounts@gmail.com");
+    var p = tlv("00","01") + tlv("26",mai) + tlv("52","0000") + tlv("53","986") + tlv("54","100.00") + tlv("58","BR") + tlv("59","Diego") + tlv("60","MARINGA") + tlv("62",tlv("05","PEDAGOGIA")) + "6304";
+    return p + crc16(p);
+}
 
-        // ── Renderizar QR Code e Payload ─────────────────────────
-        var pixPayload = gerarPixPayload();
-        document.getElementById('pix-payload').textContent = pixPayload;
+var pixPayload = gerarPix();
+document.getElementById("pix-payload").textContent = pixPayload;
 
-        new QRCode(document.getElementById("qrcode"), {
-            text: pixPayload,
-            width: 180,
-            height: 180,
-            colorDark: "#000000",
-            colorLight: "#ffffff",
-            correctLevel: QRCode.CorrectLevel.M
-        });
+new QRCode(document.getElementById("qrcode"), {
+    text: pixPayload, width: 160, height: 160,
+    colorDark: "#000000", colorLight: "#ffffff",
+    correctLevel: QRCode.CorrectLevel.M
+});
 
-        // ── Copiar chave PIX ─────────────────────────────────────
-        function copiarChavePix() {
-            navigator.clipboard.writeText("diegooljcounts@gmail.com").then(function() {
-                var btn = document.getElementById("btn-copy-text");
-                btn.textContent = "Copiado!";
-                setTimeout(function() { btn.textContent = "Copiar chave"; }, 2500);
-            });
-        }
+// ── Copy helpers ─────────────────────────────────────────────
+function copiarChave() {
+    navigator.clipboard.writeText("diegooljcounts@gmail.com").then(function() {
+        var el = document.getElementById("t-chave");
+        el.textContent = "Copiado!";
+        setTimeout(function(){ el.textContent = "Copiar chave"; }, 2500);
+    });
+}
+function copiarPayload() {
+    navigator.clipboard.writeText(pixPayload).then(function() {
+        var el = document.getElementById("t-payload");
+        el.textContent = "Copiado!";
+        setTimeout(function(){ el.textContent = "Copiar codigo PIX"; }, 2500);
+    });
+}
 
-        // ── URL do Google Apps Script (substituir apos deploy) ───
-        var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz5zwU9r8A6A5wcKpOzxUMVioRkBJh4Jev6zgSTGrpbXW9lWlxnKVW8Jrze9Gk4-60h4Q/exec';
+// ── Flow: confirm → form → access ────────────────────────────
+function confirmarPagamento() {
+    document.getElementById("btn-confirm").classList.add("hidden");
+    document.getElementById("hint-confirm").classList.add("hidden");
+    document.getElementById("form-wrap").classList.remove("hidden");
+}
 
-        // ── Passo 1: mostra formulario apos clique de confirmacao ─
-        function confirmarPagamento() {
-            document.getElementById('btn-confirmar-pix').classList.add('hidden');
-            document.getElementById('hint-confirmar').classList.add('hidden');
-            document.getElementById('form-cadastro').classList.remove('hidden');
-        }
+var _liberado = false;
+function liberarAcesso() {
+    if (_liberado) return; _liberado = true;
+    var email = document.getElementById("f-email").value.trim();
+    document.getElementById("email-conf").textContent = email;
+    document.getElementById("form-wrap").classList.add("hidden");
+    document.getElementById("access-wrap").classList.remove("hidden");
+}
 
-        // ── Passo 2: envia dados ao Apps Script e libera acesso ───
-        var _acessoLiberado = false;
+function submeterForm(e) {
+    e.preventDefault();
+    var btn = document.getElementById("btn-submit");
+    btn.disabled = true;
+    btn.innerHTML = "<i class='fa-solid fa-spinner fa-spin'></i> Salvando...";
 
-        function submeterFormulario(e) {
-            e.preventDefault();
-            var btn = document.getElementById('btn-submit-form');
-            btn.disabled = true;
-            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Salvando...';
+    var dados = {
+        nome:     document.getElementById("f-nome").value.trim(),
+        email:    document.getElementById("f-email").value.trim(),
+        whatsapp: document.getElementById("f-wpp").value.trim(),
+        produto:  "PedagogIA - Pre-Venda R$100",
+        data:     new Date().toLocaleString("pt-BR")
+    };
 
-            var dados = {
-                nome:      document.getElementById('campo-nome').value.trim(),
-                email:     document.getElementById('campo-email').value.trim(),
-                whatsapp:  document.getElementById('campo-whatsapp').value.trim(),
-                produto:   'PedagogIA - Pre-Venda R$100',
-                data:      new Date().toLocaleString('pt-BR')
-            };
+    fetch(APPS_SCRIPT_URL, {
+        method: "POST", mode: "no-cors",
+        headers: { "Content-Type": "text/plain" },
+        body: JSON.stringify(dados)
+    }).catch(function(){}).finally(liberarAcesso);
 
-            // Envia para a planilha (no-cors: dados chegam mesmo sem confirmar resposta)
-            fetch(APPS_SCRIPT_URL, {
-                method: 'POST',
-                mode: 'no-cors',
-                headers: { 'Content-Type': 'text/plain' },
-                body: JSON.stringify(dados)
-            }).catch(function(){}).finally(function(){ liberarAcesso(); });
+    setTimeout(liberarAcesso, 4000);
+}
 
-            // Fallback: libera em 4s caso o fetch nao resolva
-            setTimeout(liberarAcesso, 4000);
-        }
+// ── Countdown 72h (localStorage) ─────────────────────────────
+(function(){
+    var KEY = "pedagogia_deadline";
+    var dl = localStorage.getItem(KEY);
+    if (!dl) { dl = Date.now() + 72*3600*1000; localStorage.setItem(KEY, dl); }
+    else dl = parseInt(dl, 10);
 
-        function liberarAcesso() {
-            if (_acessoLiberado) return;
-            _acessoLiberado = true;
-            var email = document.getElementById('campo-email').value.trim();
-            document.getElementById('email-confirmado').textContent = email;
-            document.getElementById('form-cadastro').classList.add('hidden');
-            document.getElementById('area-pos-pagamento').classList.remove('hidden');
-        }
-
-        // ── Copiar codigo PIX (copia e cola) ─────────────────────
-        function copiarPixPayload() {
-            navigator.clipboard.writeText(pixPayload).then(function() {
-                var btn = document.getElementById("btn-copy-payload");
-                btn.textContent = "Copiado!";
-                setTimeout(function() { btn.textContent = "Copiar codigo PIX"; }, 2500);
-            });
-        }
-
-        // ── Countdown 72h (persiste via localStorage) ────────────
-        (function() {
-            var KEY = "pedagogia_prevenda_deadline";
-            var deadline = localStorage.getItem(KEY);
-            if (!deadline) {
-                deadline = Date.now() + 72 * 60 * 60 * 1000;
-                localStorage.setItem(KEY, deadline);
-            } else {
-                deadline = parseInt(deadline, 10);
-            }
-
-            function pad(n) { return String(n).padStart(2, "0"); }
-
-            function tick() {
-                var diff = deadline - Date.now();
-                if (diff <= 0) {
-                    document.getElementById("cd-hours").textContent   = "00";
-                    document.getElementById("cd-minutes").textContent = "00";
-                    document.getElementById("cd-seconds").textContent = "00";
-                    return;
-                }
-                var s = Math.floor(diff / 1000);
-                document.getElementById("cd-hours").textContent   = pad(Math.floor(s / 3600));
-                document.getElementById("cd-minutes").textContent = pad(Math.floor((s % 3600) / 60));
-                document.getElementById("cd-seconds").textContent = pad(s % 60);
-            }
-
-            tick();
-            setInterval(tick, 1000);
-        })();
-    </script>
+    function pad(n){ return String(n).padStart(2,"0"); }
+    function tick(){
+        var diff = dl - Date.now();
+        if (diff <= 0) { document.getElementById("cd-h").textContent = document.getElementById("cd-m").textContent = document.getElementById("cd-s").textContent = "00"; return; }
+        var s = Math.floor(diff/1000);
+        document.getElementById("cd-h").textContent = pad(Math.floor(s/3600));
+        document.getElementById("cd-m").textContent = pad(Math.floor((s%3600)/60));
+        document.getElementById("cd-s").textContent = pad(s%60);
+    }
+    tick(); setInterval(tick, 1000);
+})();
+</script>
 </body>
 </html>
