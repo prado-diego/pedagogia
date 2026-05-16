@@ -532,28 +532,56 @@
                                     </button>
                                 </div>
 
-                                <!-- Botao de confirmacao de pagamento -->
+                                <!-- Passo 1: botao inicial -->
                                 <button id="btn-confirmar-pix" onclick="confirmarPagamento()"
                                    class="w-full bg-secondary hover:bg-yellow-400 text-darker py-4 rounded-xl font-extrabold text-center transition-all flex items-center justify-center gap-3 text-base shadow-[0_4px_20px_rgba(255,193,7,0.4)]">
                                     <i class="fa-solid fa-circle-check text-xl"></i> Ja realizei o pagamento via PIX
                                 </button>
-                                <p class="text-xs text-gray-600 mt-2 text-center">
+                                <p id="hint-confirmar" class="text-xs text-gray-600 mt-2 text-center">
                                     Clique acima para liberar o acesso ao grupo e ao ebook.
                                 </p>
 
-                                <!-- Links bloqueados — revelados apos confirmacao -->
+                                <!-- Passo 2: formulario de cadastro (oculto) -->
+                                <div id="form-cadastro" class="hidden w-full mt-3">
+                                    <div class="bg-black/70 border border-white/10 rounded-2xl p-5">
+                                        <p class="text-white font-bold text-sm text-center mb-1">Preencha seus dados para liberar o acesso</p>
+                                        <p class="text-xs text-gray-500 text-center mb-4">Seus dados ficam registrados com seguranca.</p>
+                                        <form id="form-aluno" onsubmit="submeterFormulario(event)" class="space-y-3">
+                                            <div>
+                                                <label class="text-xs text-gray-400 mb-1 block">Nome completo</label>
+                                                <input type="text" id="campo-nome" required
+                                                    class="w-full bg-black/60 border border-white/10 rounded-lg px-3 py-2.5 text-white text-sm placeholder-gray-600 focus:outline-none focus:border-secondary/60"
+                                                    placeholder="Seu nome completo">
+                                            </div>
+                                            <div>
+                                                <label class="text-xs text-gray-400 mb-1 block">E-mail</label>
+                                                <input type="email" id="campo-email" required
+                                                    class="w-full bg-black/60 border border-white/10 rounded-lg px-3 py-2.5 text-white text-sm placeholder-gray-600 focus:outline-none focus:border-secondary/60"
+                                                    placeholder="seu@email.com">
+                                            </div>
+                                            <div>
+                                                <label class="text-xs text-gray-400 mb-1 block">WhatsApp</label>
+                                                <input type="tel" id="campo-whatsapp" required
+                                                    class="w-full bg-black/60 border border-white/10 rounded-lg px-3 py-2.5 text-white text-sm placeholder-gray-600 focus:outline-none focus:border-secondary/60"
+                                                    placeholder="(00) 00000-0000">
+                                            </div>
+                                            <button type="submit" id="btn-submit-form"
+                                                class="w-full bg-secondary hover:bg-yellow-400 text-darker py-3.5 rounded-xl font-extrabold transition-all flex items-center justify-center gap-2 text-sm">
+                                                <i class="fa-solid fa-unlock"></i> Liberar meu acesso
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+
+                                <!-- Passo 3: links pos-pagamento (ocultos ate formulario enviado) -->
                                 <div id="area-pos-pagamento" class="hidden w-full mt-3 space-y-3">
                                     <div class="bg-green-500/10 border border-green-500/30 rounded-xl px-4 py-2 text-center">
-                                        <p class="text-green-400 text-xs font-bold">Acesso liberado! Bem-vindo(a) ao PedagogIA.</p>
+                                        <p class="text-green-400 text-xs font-bold">Cadastro confirmado! Bem-vindo(a) ao PedagogIA.</p>
                                     </div>
-
-                                    <!-- Botao WhatsApp -->
                                     <a href="https://chat.whatsapp.com/GXP02lLDeeEAd3hQUFCzI1?mode=gi_t" target="_blank" rel="noopener"
                                        class="w-full bg-green-600 hover:bg-green-500 text-white py-3.5 rounded-xl font-bold text-center transition-all flex items-center justify-center gap-3 text-base shadow-[0_4px_20px_rgba(34,197,94,0.3)]">
                                         <i class="fa-brands fa-whatsapp text-xl"></i> Entrar no Grupo Agora
                                     </a>
-
-                                    <!-- Botao Ebook -->
                                     <a href="Ebook_gratis.pdf" download
                                        class="w-full bg-primary/20 hover:bg-primary/30 border border-primary/40 text-white py-3.5 rounded-xl font-bold text-center transition-all flex items-center justify-center gap-3 text-base">
                                         <i class="fa-solid fa-file-arrow-down text-primary text-xl"></i> Baixar Ebook Gratis (PDF)
@@ -705,9 +733,49 @@
             });
         }
 
-        // ── Liberar acesso pos-pagamento ─────────────────────────
+        // ── URL do Google Apps Script (substituir apos deploy) ───
+        var APPS_SCRIPT_URL = 'COLE_AQUI_A_URL_DO_APPS_SCRIPT';
+
+        // ── Passo 1: mostra formulario apos clique de confirmacao ─
         function confirmarPagamento() {
             document.getElementById('btn-confirmar-pix').classList.add('hidden');
+            document.getElementById('hint-confirmar').classList.add('hidden');
+            document.getElementById('form-cadastro').classList.remove('hidden');
+        }
+
+        // ── Passo 2: envia dados ao Apps Script e libera acesso ───
+        var _acessoLiberado = false;
+
+        function submeterFormulario(e) {
+            e.preventDefault();
+            var btn = document.getElementById('btn-submit-form');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Salvando...';
+
+            var dados = {
+                nome:      document.getElementById('campo-nome').value.trim(),
+                email:     document.getElementById('campo-email').value.trim(),
+                whatsapp:  document.getElementById('campo-whatsapp').value.trim(),
+                produto:   'PedagogIA - Pre-Venda R$100',
+                data:      new Date().toLocaleString('pt-BR')
+            };
+
+            // Envia para a planilha (no-cors: dados chegam mesmo sem confirmar resposta)
+            fetch(APPS_SCRIPT_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'text/plain' },
+                body: JSON.stringify(dados)
+            }).catch(function(){}).finally(function(){ liberarAcesso(); });
+
+            // Fallback: libera em 4s caso o fetch nao resolva
+            setTimeout(liberarAcesso, 4000);
+        }
+
+        function liberarAcesso() {
+            if (_acessoLiberado) return;
+            _acessoLiberado = true;
+            document.getElementById('form-cadastro').classList.add('hidden');
             document.getElementById('area-pos-pagamento').classList.remove('hidden');
         }
 
