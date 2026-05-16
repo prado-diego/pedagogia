@@ -474,6 +474,65 @@ section { padding: 96px 0; }
 .btn-wpp:hover { background: #1fba58; transform: translateY(-1px); }
 .spam-note { font-size: .67rem; color: var(--muted); text-align: center; }
 
+/* ── Vagas counter ── */
+.vagas-counter {
+  display: flex; align-items: center; gap: 16px;
+  padding: 14px 18px; border-radius: var(--r-sm);
+  background: rgba(230,43,30,.05); border: 1px solid rgba(230,43,30,.16);
+  margin-bottom: 20px;
+}
+.vagas-num { font-size: 2.2rem; font-weight: 800; color: var(--red); line-height: 1; letter-spacing: -.05em; flex-shrink: 0; }
+.vagas-info { flex: 1; }
+.vagas-label { font-size: .78rem; font-weight: 700; color: var(--text); }
+.vagas-sub { font-size: .68rem; color: var(--sub); margin-top: 2px; }
+.vagas-bar { height: 5px; background: rgba(0,0,0,.08); border-radius: 3px; margin-top: 8px; overflow: hidden; }
+.vagas-fill { height: 100%; background: linear-gradient(90deg, var(--red), #ff6b35); border-radius: 3px; transition: width .8s ease; }
+
+/* ── Feed últimas aquisições ── */
+.feed-panel {
+  margin-top: 20px; padding: 14px 16px;
+  background: rgba(0,0,0,.03); border: 1px solid rgba(0,0,0,.07);
+  border-radius: var(--r-sm);
+}
+.feed-panel-head {
+  font-size: .62rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--muted); margin-bottom: 10px; display: flex; align-items: center; gap: 6px;
+}
+.feed-live-dot { width: 6px; height: 6px; background: #22c55e; border-radius: 50%; animation: ping 1.5s infinite; flex-shrink: 0; }
+.feed-entry {
+  display: flex; align-items: center; gap: 10px;
+  padding: 7px 0; border-bottom: 1px solid rgba(0,0,0,.05);
+  animation: feedIn .4s ease;
+}
+.feed-entry:last-child { border-bottom: none; }
+@keyframes feedIn { from { opacity:0; transform:translateX(-8px); } to { opacity:1; transform:translateX(0); } }
+.feed-avatar {
+  width: 30px; height: 30px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--red), #ff8a50);
+  display: flex; align-items: center; justify-content: center;
+  font-size: .75rem; font-weight: 800; color: #fff; flex-shrink: 0;
+}
+.feed-name { font-size: .8rem; font-weight: 700; color: var(--text); line-height: 1.2; }
+.feed-city { font-size: .68rem; color: var(--sub); }
+.feed-time { font-size: .6rem; color: var(--muted); margin-left: auto; white-space: nowrap; }
+
+/* ── Toast flutuante ── */
+.toast-wrap { position: fixed; bottom: 24px; left: 24px; z-index: 9999; pointer-events: none; }
+.s-toast {
+  display: flex; align-items: center; gap: 11px;
+  background: rgba(255,255,255,.96);
+  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(0,0,0,.09); border-radius: 14px;
+  padding: 11px 16px; max-width: 270px;
+  box-shadow: 0 8px 32px rgba(0,0,0,.14);
+  transform: translateY(16px); opacity: 0;
+  transition: transform .35s cubic-bezier(.22,1,.36,1), opacity .35s ease;
+}
+.s-toast.show { transform: translateY(0); opacity: 1; }
+.s-toast-icon { font-size: 1.3rem; flex-shrink: 0; }
+.s-toast-name { font-size: .8rem; font-weight: 700; color: var(--text); }
+.s-toast-msg { font-size: .68rem; color: var(--sub); }
+
 /* Testimonials */
 .testi-section { margin-top: 48px; }
 .testi-section h3 { font-size: 1rem; font-weight: 700; color: var(--text); margin-bottom: 4px; }
@@ -776,6 +835,16 @@ footer {
             <p class="price-after"><i class="fa-solid fa-circle-exclamation"></i> O valor sobe para R$ 150 ao fim do prazo</p>
           </div>
 
+          <!-- Counter de vagas -->
+          <div class="vagas-counter">
+            <div class="vagas-num" id="vagas-num">—</div>
+            <div class="vagas-info">
+              <div class="vagas-label">professores já garantiram a vaga</div>
+              <div class="vagas-sub">Turma com vagas limitadas · pré-venda encerra em breve</div>
+              <div class="vagas-bar"><div class="vagas-fill" id="vagas-fill" style="width:0%"></div></div>
+            </div>
+          </div>
+
           <div class="cd-wrap">
             <p class="cd-label">Oferta expira em</p>
             <div class="cd-units">
@@ -801,6 +870,14 @@ footer {
               <strong>Primeira aula: 1º sábado de junho (06/06/2026)</strong>
               <span>Após fechar a turma, confirmamos a melhor data no grupo.</span>
             </div>
+          </div>
+
+          <!-- Feed últimas aquisições -->
+          <div class="feed-panel">
+            <div class="feed-panel-head">
+              <span class="feed-live-dot"></span> Últimas aquisições
+            </div>
+            <div id="feed-list"></div>
           </div>
         </div>
       </div>
@@ -844,6 +921,7 @@ footer {
               <div class="field"><label>Nome completo</label><input type="text" id="f-nome" required placeholder="Seu nome"></div>
               <div class="field"><label>E-mail</label><input type="email" id="f-email" required placeholder="seu@email.com"></div>
               <div class="field"><label>WhatsApp</label><input type="tel" id="f-wpp" required placeholder="(00) 00000-0000"></div>
+              <div class="field"><label>Cidade</label><input type="text" id="f-cidade" required placeholder="Sua cidade"></div>
               <button type="submit" id="btn-submit" class="btn-submit"><i class="fa-solid fa-unlock"></i> Liberar meu acesso</button>
             </form>
           </div>
@@ -893,6 +971,17 @@ footer {
     <p class="f-copy">&copy; 2026 PedagogIA com Diego. Todos os direitos reservados.</p>
   </div>
 </footer>
+
+<!-- Toast flutuante -->
+<div class="toast-wrap">
+  <div class="s-toast" id="s-toast">
+    <div class="s-toast-icon">🎓</div>
+    <div>
+      <div class="s-toast-name" id="s-toast-name"></div>
+      <div class="s-toast-msg">acabou de garantir a vaga</div>
+    </div>
+  </div>
+</div>
 
 <!-- ── Scripts ────────────────────────────────────────────────── -->
 <script>
@@ -946,10 +1035,108 @@ function confirmarPagamento() {
   document.getElementById("form-wrap").classList.remove("hidden");
 }
 
+// ── Dados de seed (prova social inicial) ─────────────────────
+var SEED_ALUNOS = [
+  { nome: "Mariana S.", cidade: "Maringá" },
+  { nome: "Carlos R.", cidade: "Londrina" },
+  { nome: "Fernanda A.", cidade: "São Paulo" },
+  { nome: "Juliana M.", cidade: "Curitiba" },
+  { nome: "Roberto L.", cidade: "Campinas" },
+  { nome: "Camila O.", cidade: "Belo Horizonte" },
+  { nome: "Thiago F.", cidade: "Florianópolis" },
+  { nome: "Ana P.", cidade: "Maringá" },
+  { nome: "Rafael N.", cidade: "Porto Alegre" },
+  { nome: "Beatriz C.", cidade: "Goiânia" },
+  { nome: "Lucas M.", cidade: "Curitiba" },
+  { nome: "Renata K.", cidade: "Londrina" },
+];
+var VAGAS_MAX = 50;
+
+function carregarAlunos() {
+  var extras = [];
+  try { extras = JSON.parse(localStorage.getItem("ped_alunos") || "[]"); } catch(e){}
+  return SEED_ALUNOS.concat(extras);
+}
+
+function salvarAluno(nome, cidade) {
+  var extras = [];
+  try { extras = JSON.parse(localStorage.getItem("ped_alunos") || "[]"); } catch(e){}
+  extras.push({ nome: primeiroNome(nome), cidade: cidade });
+  localStorage.setItem("ped_alunos", JSON.stringify(extras));
+}
+
+function primeiroNome(nome) {
+  var partes = nome.trim().split(" ");
+  return partes[0] + (partes[1] ? " " + partes[1][0] + "." : "");
+}
+
+function tempoRelativo(idx, total) {
+  if (idx >= total - 3) return "agora";
+  var minutos = (total - 1 - idx) * 17 + Math.floor(Math.random() * 8);
+  if (minutos < 60) return minutos + "min atrás";
+  return Math.floor(minutos / 60) + "h atrás";
+}
+
+// ── Renderiza counter e feed ──────────────────────────────────
+function renderizarSocial() {
+  var alunos = carregarAlunos();
+  var total  = alunos.length;
+
+  // Counter
+  document.getElementById("vagas-num").textContent = total;
+  var pct = Math.min(Math.round((total / VAGAS_MAX) * 100), 100);
+  document.getElementById("vagas-fill").style.width = pct + "%";
+
+  // Feed: últimas 3
+  var ultimas = alunos.slice(-3).reverse();
+  var lista   = document.getElementById("feed-list");
+  lista.innerHTML = "";
+  ultimas.forEach(function(a, i) {
+    var ini  = a.nome.charAt(0).toUpperCase();
+    var tempo = i === 0 ? "agora" : (i * 14 + Math.floor(Math.random()*6)) + "min atrás";
+    var div  = document.createElement("div");
+    div.className = "feed-entry";
+    div.innerHTML =
+      '<div class="feed-avatar">' + ini + '</div>' +
+      '<div><div class="feed-name">' + a.nome + '</div>' +
+      '<div class="feed-city">' + a.cidade + '</div></div>' +
+      '<div class="feed-time">' + tempo + '</div>';
+    lista.appendChild(div);
+  });
+}
+
+// ── Toast flutuante (roda a cada ~12s) ───────────────────────
+(function() {
+  var alunos = carregarAlunos();
+  var idx    = Math.floor(Math.random() * alunos.length);
+  var toast  = document.getElementById("s-toast");
+  var nameEl = document.getElementById("s-toast-name");
+
+  function mostrarToast() {
+    var a = alunos[idx % alunos.length];
+    nameEl.textContent = a.nome + " · " + a.cidade;
+    toast.classList.add("show");
+    setTimeout(function() {
+      toast.classList.remove("show");
+      idx++;
+      setTimeout(mostrarToast, 11000 + Math.random() * 6000);
+    }, 4500);
+  }
+
+  setTimeout(mostrarToast, 5000 + Math.random() * 4000);
+})();
+
+renderizarSocial();
+
+// ── Fluxo ────────────────────────────────────────────────────
 var _liberado = false;
 function liberarAcesso() {
   if (_liberado) return; _liberado = true;
-  var email = document.getElementById("f-email").value.trim();
+  var email  = document.getElementById("f-email").value.trim();
+  var nome   = document.getElementById("f-nome").value.trim();
+  var cidade = document.getElementById("f-cidade").value.trim();
+  salvarAluno(nome, cidade);
+  renderizarSocial();
   document.getElementById("email-conf").textContent = email;
   document.getElementById("form-wrap").classList.add("hidden");
   document.getElementById("access-wrap").classList.remove("hidden");
@@ -968,7 +1155,8 @@ function submeterForm(e) {
       nome:     document.getElementById("f-nome").value.trim(),
       email:    document.getElementById("f-email").value.trim(),
       whatsapp: document.getElementById("f-wpp").value.trim(),
-      produto:  "PedagogIA - Pré-Venda R$100",
+      cidade:   document.getElementById("f-cidade").value.trim(),
+      produto:  "PedagogIA - Pre-Venda R$100",
       data:     new Date().toLocaleString("pt-BR")
     })
   }).catch(function(){}).finally(liberarAcesso);
