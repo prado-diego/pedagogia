@@ -1035,46 +1035,21 @@ function confirmarPagamento() {
   document.getElementById("form-wrap").classList.remove("hidden");
 }
 
-// ── Dados de seed (prova social inicial) ─────────────────────
-var SEED_ALUNOS = [
-  { nome: "Mariana S.", cidade: "Maringá" },
-  { nome: "Carlos R.", cidade: "Londrina" },
-  { nome: "Fernanda A.", cidade: "São Paulo" },
-  { nome: "Juliana M.", cidade: "Curitiba" },
-  { nome: "Roberto L.", cidade: "Campinas" },
-  { nome: "Camila O.", cidade: "Belo Horizonte" },
-  { nome: "Thiago F.", cidade: "Florianópolis" },
-  { nome: "Ana P.", cidade: "Maringá" },
-  { nome: "Rafael N.", cidade: "Porto Alegre" },
-  { nome: "Beatriz C.", cidade: "Goiânia" },
-  { nome: "Lucas M.", cidade: "Curitiba" },
-  { nome: "Renata K.", cidade: "Londrina" },
-];
 var VAGAS_MAX = 50;
 
 function carregarAlunos() {
-  var extras = [];
-  try { extras = JSON.parse(localStorage.getItem("ped_alunos") || "[]"); } catch(e){}
-  return SEED_ALUNOS.concat(extras);
+  try { return JSON.parse(localStorage.getItem("ped_alunos") || "[]"); } catch(e){ return []; }
 }
 
 function salvarAluno(nome, cidade) {
-  var extras = [];
-  try { extras = JSON.parse(localStorage.getItem("ped_alunos") || "[]"); } catch(e){}
-  extras.push({ nome: primeiroNome(nome), cidade: cidade });
-  localStorage.setItem("ped_alunos", JSON.stringify(extras));
+  var lista = carregarAlunos();
+  lista.push({ nome: primeiroNome(nome), cidade: cidade });
+  localStorage.setItem("ped_alunos", JSON.stringify(lista));
 }
 
 function primeiroNome(nome) {
   var partes = nome.trim().split(" ");
   return partes[0] + (partes[1] ? " " + partes[1][0] + "." : "");
-}
-
-function tempoRelativo(idx, total) {
-  if (idx >= total - 3) return "agora";
-  var minutos = (total - 1 - idx) * 17 + Math.floor(Math.random() * 8);
-  if (minutos < 60) return minutos + "min atrás";
-  return Math.floor(minutos / 60) + "h atrás";
 }
 
 // ── Renderiza counter e feed ──────────────────────────────────
@@ -1084,17 +1059,21 @@ function renderizarSocial() {
 
   // Counter
   document.getElementById("vagas-num").textContent = total;
-  var pct = Math.min(Math.round((total / VAGAS_MAX) * 100), 100);
+  var pct = total > 0 ? Math.min(Math.round((total / VAGAS_MAX) * 100), 100) : 0;
   document.getElementById("vagas-fill").style.width = pct + "%";
 
-  // Feed: últimas 3
-  var ultimas = alunos.slice(-3).reverse();
-  var lista   = document.getElementById("feed-list");
+  // Feed: últimas 3 (só mostra se houver cadastros reais)
+  var lista = document.getElementById("feed-list");
   lista.innerHTML = "";
+  if (total === 0) {
+    lista.innerHTML = '<div style="font-size:.72rem;color:var(--muted);padding:6px 0">Seja o primeiro a garantir sua vaga.</div>';
+    return;
+  }
+  var ultimas = alunos.slice(-3).reverse();
   ultimas.forEach(function(a, i) {
-    var ini  = a.nome.charAt(0).toUpperCase();
-    var tempo = i === 0 ? "agora" : (i * 14 + Math.floor(Math.random()*6)) + "min atrás";
-    var div  = document.createElement("div");
+    var ini   = a.nome.charAt(0).toUpperCase();
+    var tempo = i === 0 ? "agora" : (i * 14) + "min atrás";
+    var div   = document.createElement("div");
     div.className = "feed-entry";
     div.innerHTML =
       '<div class="feed-avatar">' + ini + '</div>' +
@@ -1105,12 +1084,13 @@ function renderizarSocial() {
   });
 }
 
-// ── Toast flutuante (roda a cada ~12s) ───────────────────────
+// ── Toast flutuante (só dispara com cadastros reais) ─────────
 (function() {
   var alunos = carregarAlunos();
-  var idx    = Math.floor(Math.random() * alunos.length);
+  if (alunos.length === 0) return;
   var toast  = document.getElementById("s-toast");
   var nameEl = document.getElementById("s-toast-name");
+  var idx    = 0;
 
   function mostrarToast() {
     var a = alunos[idx % alunos.length];
@@ -1123,7 +1103,7 @@ function renderizarSocial() {
     }, 4500);
   }
 
-  setTimeout(mostrarToast, 5000 + Math.random() * 4000);
+  setTimeout(mostrarToast, 5000);
 })();
 
 renderizarSocial();
