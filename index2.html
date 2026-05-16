@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PedagogIA — Domine a IA na Educação</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <style>
+/* ─── Reset ─────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+:root {
+  --bg:     #07080D;
+  --bg2:    #0D0F17;
+  --bg3:    #12151F;
+  --border: rgba(255,255,255,.07);
+  --border-l: rgba(255,255,255,.12);
+  --text:   #F0F2FF;
+  --sub:    #7B82A0;
+  --muted:  #3D4260;
+  --red:    #FF3A2D;
+  --grad:   linear-gradient(135deg, #FF3A2D 0%, #FF6B35 50%, #FFB627 100%);
+  --grad-text: linear-gradient(135deg, #FF6B35, #FFB627);
+  --glow:   rgba(255,58,45,.25);
+  --r:      16px;
+  --r-sm:   10px;
+}
+
+body {
+  font-family: 'Space Grotesk', system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.65;
+  overflow-x: hidden;
+}
+
+.hidden { display: none !important; }
+
+/* ─── Grid background ────────────────────────────────────────── */
+body::before {
+  content: '';
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background-image:
+    linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
+/* ─── Glow blobs ─────────────────────────────────────────────── */
+.glow-blob {
+  position: fixed; border-radius: 50%; filter: blur(120px);
+  pointer-events: none; z-index: 0;
+}
+.gb1 { width: 500px; height: 500px; background: rgba(255,58,45,.12); top: -200px; right: -100px; }
+.gb2 { width: 400px; height: 400px; background: rgba(255,182,39,.07); bottom: 10%; left: -100px; }
+.gb3 { width: 300px; height: 300px; background: rgba(255,107,53,.08); top: 50%; left: 50%; }
+
+/* ─── Layout ─────────────────────────────────────────────────── */
+.wrap { max-width: 1100px; margin: 0 auto; padding: 0 28px; position: relative; z-index: 1; }
+
+/* ─── Scrollbar ──────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--muted); border-radius: 99px; }
+
+/* ─── Navbar ─────────────────────────────────────────────────── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--border);
+  background: rgba(7,8,13,.85);
+  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+}
+.nav-inner { display: flex; align-items: center; justify-content: space-between; }
+.logo { font-weight: 700; font-size: 1.25rem; color: var(--text); text-decoration: none; letter-spacing: -.02em; }
+.logo span {
+  background: var(--grad);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.nav-links { display: flex; gap: 2rem; list-style: none; }
+.nav-links a { color: var(--sub); text-decoration: none; font-size: .85rem; font-weight: 500; transition: color .2s; }
+.nav-links a:hover { color: var(--text); }
+.btn-nav {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--grad); color: #fff;
+  padding: 10px 22px; border-radius: 8px;
+  font-size: .82rem; font-weight: 700; text-decoration: none;
+  transition: all .2s; box-shadow: 0 0 20px var(--glow);
+}
+.btn-nav:hover { transform: translateY(-1px); box-shadow: 0 0 32px var(--glow), 0 4px 16px rgba(0,0,0,.3); }
+
+/* ─── Hero ───────────────────────────────────────────────────── */
+#hero {
+  min-height: 100vh; display: flex; align-items: center;
+  padding: 120px 0 80px; position: relative;
+}
+.hero-tag {
+  display: inline-flex; align-items: center; gap: 8px;
+  border: 1px solid rgba(255,58,45,.3);
+  background: rgba(255,58,45,.08);
+  color: #FF8060; padding: 6px 16px; border-radius: 6px;
+  font-size: .72rem; font-weight: 700; letter-spacing: .08em;
+  text-transform: uppercase; margin-bottom: 32px;
+  font-family: 'Space Mono', monospace;
+}
+.hero-tag .dot { width: 6px; height: 6px; background: var(--red); border-radius: 50%; animation: blink 1.8s infinite; }
+@keyframes blink { 0%,100%{opacity:1}50%{opacity:.2} }
+
+#hero h1 {
+  font-size: clamp(2.8rem, 5.5vw, 5rem);
+  font-weight: 700; line-height: 1.08;
+  letter-spacing: -.04em; margin-bottom: 28px;
+  color: var(--text); max-width: 780px;
+}
+#hero h1 .grad-text {
+  background: var(--grad);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+#hero .lead { font-size: 1.1rem; color: var(--sub); max-width: 560px; margin-bottom: 44px; font-weight: 400; line-height: 1.8; }
+#hero .lead strong { color: var(--text); font-weight: 600; }
+.hero-ctas { display: flex; flex-wrap: wrap; gap: 14px; margin-bottom: 64px; }
+
+/* hero stats bar */
+.hero-stats {
+  display: flex; gap: 0;
+  border: 1px solid var(--border-l); border-radius: var(--r);
+  overflow: hidden; width: fit-content;
+}
+.h-stat {
+  padding: 18px 28px; text-align: center;
+  border-right: 1px solid var(--border);
+  background: rgba(255,255,255,.02);
+}
+.h-stat:last-child { border-right: none; }
+.h-stat .n {
+  font-size: 1.6rem; font-weight: 700; letter-spacing: -.04em;
+  display: block; margin-bottom: 3px;
+  background: var(--grad-text);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.h-stat .l { font-size: .72rem; color: var(--muted); font-weight: 500; text-transform: uppercase; letter-spacing: .06em; }
+
+/* ─── Buttons ─────────────────────────────────────────────────── */
+.btn-p {
+  display: inline-flex; align-items: center; gap: 10px;
+  background: var(--grad); color: #fff;
+  padding: 14px 28px; border-radius: 8px;
+  font-size: .9rem; font-weight: 700; text-decoration: none;
+  border: none; cursor: pointer; font-family: inherit;
+  transition: all .2s; box-shadow: 0 0 24px var(--glow);
+}
+.btn-p:hover { transform: translateY(-2px); box-shadow: 0 0 40px var(--glow), 0 8px 24px rgba(0,0,0,.4); }
+
+.btn-outline {
+  display: inline-flex; align-items: center; gap: 10px;
+  background: transparent; color: var(--text);
+  padding: 14px 28px; border-radius: 8px;
+  font-size: .9rem; font-weight: 600; text-decoration: none;
+  border: 1px solid var(--border-l); cursor: pointer; font-family: inherit;
+  transition: all .2s;
+}
+.btn-outline:hover { border-color: rgba(255,255,255,.25); background: rgba(255,255,255,.04); }
+
+/* ─── Section commons ─────────────────────────────────────────── */
+section { padding: 96px 0; }
+
+.s-tag {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: .7rem; font-weight: 700; letter-spacing: .12em;
+  text-transform: uppercase; color: #FF8060; margin-bottom: 16px;
+  font-family: 'Space Mono', monospace;
+}
+.s-tag::before { content: '//'; color: var(--muted); }
+
+.s-title {
+  font-size: clamp(1.9rem, 3.5vw, 2.9rem);
+  font-weight: 700; letter-spacing: -.04em; color: var(--text);
+  line-height: 1.15; margin-bottom: 16px;
+}
+.s-title .grad {
+  background: var(--grad);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.s-sub { font-size: 1rem; color: var(--sub); max-width: 480px; }
+
+/* ─── Card base ───────────────────────────────────────────────── */
+.card {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  transition: border-color .3s, transform .3s;
+}
+.card:hover { border-color: var(--border-l); transform: translateY(-3px); }
+
+/* ─── Pain ────────────────────────────────────────────────────── */
+#problema { padding-top: 0; }
+.pain-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1px; margin-top: 52px; background: var(--border); border-radius: var(--r); overflow: hidden; }
+.pain-card { padding: 36px 28px; background: var(--bg2); transition: background .3s; }
+.pain-card:hover { background: var(--bg3); }
+.pain-num { font-family: 'Space Mono', monospace; font-size: .72rem; color: var(--muted); margin-bottom: 20px; display: block; }
+.pain-icon { width: 40px; height: 40px; border-radius: var(--r-sm); background: rgba(255,58,45,.1); border: 1px solid rgba(255,58,45,.2); color: var(--red); display: flex; align-items: center; justify-content: center; font-size: 1rem; margin-bottom: 16px; }
+.pain-card h3 { font-size: 1rem; font-weight: 700; color: var(--text); margin-bottom: 10px; letter-spacing: -.02em; }
+.pain-card p { font-size: .875rem; color: var(--sub); line-height: 1.75; }
+
+/* ─── Method ──────────────────────────────────────────────────── */
+.method-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: center; margin-top: 52px; }
+.steps { display: flex; flex-direction: column; gap: 4px; }
+.step {
+  display: flex; gap: 16px; align-items: flex-start;
+  padding: 18px; border-radius: var(--r-sm);
+  border: 1px solid transparent; transition: all .2s; cursor: default;
+}
+.step:hover { background: rgba(255,255,255,.03); border-color: var(--border); }
+.step-num {
+  width: 36px; height: 36px; min-width: 36px; border-radius: 8px;
+  background: var(--grad); display: flex; align-items: center; justify-content: center;
+  font-family: 'Space Mono', monospace; font-size: .9rem; font-weight: 700; color: #fff;
+  box-shadow: 0 0 16px var(--glow);
+}
+.step-num.dim { background: var(--bg3); border: 1px solid var(--border-l); box-shadow: none; color: var(--sub); }
+.step h4 { font-size: .95rem; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+.step p { font-size: .84rem; color: var(--sub); line-height: 1.65; }
+
+/* Terminal */
+.terminal { border-radius: var(--r); overflow: hidden; border: 1px solid var(--border-l); background: #090B11; }
+.t-bar { display: flex; align-items: center; justify-content: space-between; padding: 13px 18px; background: rgba(255,255,255,.03); border-bottom: 1px solid var(--border); }
+.t-dots { display: flex; gap: 6px; }
+.t-dots span { width: 11px; height: 11px; border-radius: 50%; }
+.t-r{background:#FF5F57}.t-y{background:#FFBD2E}.t-g{background:#27C93F}
+.t-lbl { font-family: 'Space Mono', monospace; font-size: .68rem; color: var(--muted); }
+.t-badge { background: rgba(255,58,45,.15); color: #FF8060; border: 1px solid rgba(255,58,45,.2); font-size: .65rem; font-weight: 700; padding: 3px 10px; border-radius: 4px; letter-spacing: .06em; text-transform: uppercase; font-family: 'Space Mono', monospace; }
+.t-body { padding: 22px 24px; font-family: 'Space Mono', monospace; font-size: .74rem; line-height: 1.9; }
+.t-body .tp { color: var(--sub); }
+.t-body .tk { color: #FF8060; }
+.t-body .tr { color: #6ED4A0; }
+.t-body .td { color: var(--muted); font-style: italic; }
+.t-response { margin-top: 14px; padding: 14px 16px; background: rgba(110,212,160,.05); border: 1px solid rgba(110,212,160,.12); border-radius: var(--r-sm); }
+
+/* ─── Tools ───────────────────────────────────────────────────── */
+.tools-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 16px; margin-top: 52px; }
+.tool-card { padding: 36px; border-radius: var(--r); background: var(--bg2); border: 1px solid var(--border); position: relative; overflow: hidden; transition: all .3s; }
+.tool-card::after { content: ''; position: absolute; inset: 0; border-radius: var(--r); background: var(--grad); opacity: 0; transition: opacity .3s; }
+.tool-card:hover { border-color: rgba(255,107,53,.3); transform: translateY(-3px); box-shadow: 0 12px 40px rgba(0,0,0,.3), 0 0 40px rgba(255,58,45,.08); }
+.tool-logo { width: 46px; height: 46px; border-radius: 50%; overflow: hidden; margin-bottom: 18px; border: 1px solid var(--border-l); }
+.tool-logo img { width: 100%; height: 100%; object-fit: cover; }
+.tool-tag { font-size: .67rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; display: block; font-family: 'Space Mono', monospace; }
+.tool-card h3 { font-size: 1.2rem; font-weight: 700; color: var(--text); margin-bottom: 12px; letter-spacing: -.02em; }
+.tool-card p { font-size: .875rem; color: var(--sub); line-height: 1.75; margin-bottom: 16px; }
+.tool-feats { list-style: none; display: flex; flex-direction: column; gap: 7px; }
+.tool-feats li { display: flex; align-items: center; gap: 10px; font-size: .82rem; color: var(--sub); }
+.tool-feats li::before { content: '→'; color: #FF8060; font-size: .8rem; font-family: 'Space Mono', monospace; }
+
+/* ─── About ───────────────────────────────────────────────────── */
+.about-grid { display: grid; grid-template-columns: 5fr 7fr; gap: 72px; align-items: center; margin-top: 56px; }
+.about-photo { position: relative; }
+.photo-frame { border-radius: var(--r); overflow: hidden; border: 1px solid var(--border-l); position: relative; }
+.photo-frame::before { content: ''; position: absolute; inset: 0; background: linear-gradient(to bottom, transparent 60%, rgba(7,8,13,.8)); z-index: 1; }
+.about-photo img.mp { width: 100%; display: block; filter: grayscale(20%) contrast(1.05); }
+.about-photo img.sp { position: absolute; bottom: -18px; right: -18px; width: 110px; height: 110px; object-fit: cover; border-radius: var(--r-sm); border: 3px solid var(--bg); z-index: 2; filter: grayscale(20%); }
+.about-tag { position: absolute; bottom: 16px; left: 16px; z-index: 2; background: rgba(7,8,13,.8); border: 1px solid var(--border-l); padding: 8px 14px; border-radius: 6px; backdrop-filter: blur(12px); }
+.about-tag span { font-size: .7rem; color: var(--sub); display: block; font-family: 'Space Mono', monospace; }
+.about-text p { font-size: 1rem; color: var(--sub); line-height: 1.85; margin-bottom: 18px; }
+.about-text p strong { color: var(--text); font-weight: 700; }
+.creds { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 28px; }
+.cred { padding: 14px 16px; border-radius: var(--r-sm); background: var(--bg3); border: 1px solid var(--border); display: flex; gap: 12px; align-items: flex-start; transition: border-color .2s; }
+.cred:hover { border-color: var(--border-l); }
+.cred i { color: #FF8060; font-size: .9rem; margin-top: 2px; flex-shrink: 0; }
+.cred b { display: block; font-size: .82rem; color: var(--text); margin-bottom: 2px; font-weight: 700; }
+.cred span { font-size: .75rem; color: var(--sub); }
+
+/* ─── Quote ───────────────────────────────────────────────────── */
+#quote { padding: 0; }
+.quote-band { padding: 80px 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); position: relative; overflow: hidden; }
+.quote-band::before { content: ''; position: absolute; inset: 0; background: var(--grad); opacity: .04; }
+.quote-band blockquote { font-size: clamp(1.5rem, 3vw, 2.3rem); font-weight: 700; color: var(--text); text-align: center; max-width: 780px; margin: 0 auto 18px; line-height: 1.35; letter-spacing: -.03em; }
+.quote-band blockquote em { font-style: normal; background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.quote-band cite { display: block; text-align: center; font-size: .75rem; color: var(--muted); font-style: normal; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; font-family: 'Space Mono', monospace; }
+
+/* ─── Offer ───────────────────────────────────────────────────── */
+#oferta { padding-bottom: 120px; }
+.offer-grid { display: grid; grid-template-columns: 7fr 5fr; gap: 20px; align-items: start; margin-top: 52px; }
+
+/* Offer card */
+.offer-card { background: var(--bg2); border: 1px solid var(--border-l); border-radius: var(--r); overflow: hidden; position: relative; }
+.offer-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--grad); }
+.offer-head { padding: 26px 30px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+.offer-head h3 { font-size: 1.3rem; font-weight: 700; color: var(--text); letter-spacing: -.03em; }
+.pv-badge { display: inline-flex; align-items: center; gap: 7px; background: rgba(255,58,45,.12); border: 1px solid rgba(255,58,45,.25); color: #FF8060; padding: 5px 14px; border-radius: 6px; font-size: .68rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; font-family: 'Space Mono', monospace; }
+.pv-badge .dot { width: 5px; height: 5px; background: var(--red); border-radius: 50%; animation: blink 1.5s infinite; }
+.offer-body { padding: 30px; }
+
+/* Price */
+.price-block { margin-bottom: 24px; padding-bottom: 24px; border-bottom: 1px solid var(--border); }
+.price-old { font-size: .78rem; color: var(--muted); text-decoration: line-through; margin-bottom: 4px; font-family: 'Space Mono', monospace; }
+.price-row { display: flex; align-items: flex-end; gap: 4px; line-height: 1; margin-bottom: 6px; }
+.price-cur { font-size: 1.4rem; font-weight: 700; color: var(--sub); padding-bottom: 8px; }
+.price-num {
+  font-size: 5.5rem; font-weight: 700; letter-spacing: -.05em; line-height: .9;
+  background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+.price-label { font-size: .7rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; font-family: 'Space Mono', monospace; }
+.price-after { display: flex; align-items: center; gap: 7px; font-size: .8rem; color: var(--sub); margin-top: 8px; }
+.price-after i { color: var(--red); font-size: .72rem; }
+
+/* Countdown */
+.cd-wrap { border-radius: var(--r-sm); padding: 16px 20px; margin-bottom: 24px; background: var(--bg3); border: 1px solid var(--border); }
+.cd-label { font-size: .65rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; font-family: 'Space Mono', monospace; }
+.cd-units { display: flex; align-items: center; gap: 8px; }
+.cd-unit { text-align: center; min-width: 52px; }
+.cd-num { font-size: 2.4rem; font-weight: 700; letter-spacing: -.04em; display: block; line-height: 1; background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.cd-tag { font-size: .58rem; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin-top: 4px; display: block; font-family: 'Space Mono', monospace; }
+.cd-sep { font-size: 1.8rem; font-weight: 700; color: var(--muted); align-self: flex-start; margin-top: 2px; line-height: 1; }
+
+/* Features */
+.offer-feats { list-style: none; display: flex; flex-direction: column; gap: 12px; margin-bottom: 24px; }
+.offer-feats li { display: flex; align-items: flex-start; gap: 12px; font-size: .88rem; color: var(--sub); line-height: 1.55; }
+.offer-feats li i { color: #FFB627; font-size: .78rem; margin-top: 4px; flex-shrink: 0; }
+.offer-feats li.hl { color: var(--text); font-weight: 600; }
+.offer-feats li.hl i { color: #FF8060; }
+
+/* Date */
+.date-box { display: flex; align-items: center; gap: 14px; padding: 14px 18px; border-radius: var(--r-sm); background: rgba(255,182,39,.06); border: 1px solid rgba(255,182,39,.2); }
+.date-box i { color: #FFB627; font-size: 1.1rem; flex-shrink: 0; }
+.date-box strong { display: block; font-size: .875rem; color: var(--text); margin-bottom: 2px; }
+.date-box span { font-size: .78rem; color: var(--sub); }
+
+/* PIX panel */
+.pix-panel { background: var(--bg2); border: 1px solid var(--border-l); border-radius: var(--r); overflow: hidden; position: sticky; top: 90px; }
+.pix-panel::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--grad); }
+.pix-head { padding: 20px 24px; border-bottom: 1px solid var(--border); }
+.pix-head h3 { font-size: 1.05rem; font-weight: 700; color: var(--text); letter-spacing: -.02em; margin-bottom: 3px; }
+.pix-head p { font-size: .78rem; color: var(--sub); font-family: 'Space Mono', monospace; }
+.pix-body { padding: 22px; }
+
+.qr-wrap { display: flex; justify-content: center; margin-bottom: 16px; }
+.qr-frame { background: #fff; padding: 10px; border-radius: var(--r-sm); border: 2px solid rgba(255,107,53,.3); box-shadow: 0 0 24px rgba(255,58,45,.15); }
+
+.pix-box { background: var(--bg3); border: 1px solid var(--border); border-radius: var(--r-sm); padding: 12px 14px; margin-bottom: 10px; text-align: center; }
+.pix-box .lbl { font-size: .6rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin-bottom: 5px; display: block; font-family: 'Space Mono', monospace; }
+.pix-box .val { font-family: 'Space Mono', monospace; font-size: .72rem; color: var(--text); word-break: break-all; line-height: 1.5; }
+.btn-copy { background: none; border: none; cursor: pointer; font-size: .65rem; color: #FF8060; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; display: inline-flex; align-items: center; gap: 5px; padding: 4px 0; margin-top: 5px; font-family: 'Space Mono', monospace; transition: color .2s; }
+.btn-copy:hover { color: #FFB060; }
+
+/* Confirm */
+.btn-confirm { width: 100%; border: none; cursor: pointer; font-family: inherit; background: var(--grad); color: #fff; padding: 14px; border-radius: 8px; font-size: .85rem; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 9px; transition: all .2s; margin-top: 6px; box-shadow: 0 0 20px var(--glow); }
+.btn-confirm:hover { transform: translateY(-1px); box-shadow: 0 0 32px var(--glow); }
+.hint-txt { font-size: .67rem; color: var(--muted); text-align: center; margin-top: 8px; font-family: 'Space Mono', monospace; }
+
+/* Form */
+.f-head { margin-bottom: 16px; padding-bottom: 14px; border-bottom: 1px solid var(--border); }
+.f-head p { font-size: .95rem; font-weight: 700; color: var(--text); margin-bottom: 3px; }
+.f-head span { font-size: .75rem; color: var(--sub); }
+.field { margin-bottom: 12px; }
+.field label { display: block; font-size: .62rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin-bottom: 5px; font-family: 'Space Mono', monospace; }
+.field input { width: 100%; padding: 11px 13px; background: var(--bg3); border: 1px solid var(--border-l); border-radius: 8px; font-size: .875rem; font-family: inherit; color: var(--text); outline: none; transition: border-color .2s, box-shadow .2s; }
+.field input:focus { border-color: rgba(255,107,53,.5); box-shadow: 0 0 0 3px rgba(255,58,45,.1); }
+.field input::placeholder { color: var(--muted); }
+
+.btn-submit { width: 100%; border: none; cursor: pointer; font-family: inherit; background: var(--grad); color: #fff; padding: 13px; border-radius: 8px; font-size: .85rem; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 9px; transition: all .2s; box-shadow: 0 0 20px var(--glow); margin-top: 4px; }
+.btn-submit:hover { transform: translateY(-1px); box-shadow: 0 0 32px var(--glow); }
+.btn-submit:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+
+/* Access */
+.access-ok { background: rgba(110,212,160,.07); border: 1px solid rgba(110,212,160,.2); border-radius: var(--r-sm); padding: 12px 14px; text-align: center; margin-bottom: 10px; }
+.access-ok p { font-size: .8rem; font-weight: 700; color: #6ED4A0; margin-bottom: 2px; }
+.access-ok span { font-size: .72rem; color: var(--sub); }
+.btn-wpp { display: flex; align-items: center; justify-content: center; gap: 10px; background: #25D366; color: #fff; padding: 13px; border-radius: 8px; font-size: .85rem; font-weight: 700; text-decoration: none; transition: all .2s; margin-bottom: 8px; box-shadow: 0 4px 16px rgba(37,211,102,.25); }
+.btn-wpp:hover { background: #1fba58; transform: translateY(-1px); }
+.spam-note { font-size: .65rem; color: var(--muted); text-align: center; font-family: 'Space Mono', monospace; }
+
+/* Testimonials */
+.testi-section { margin-top: 48px; }
+.testi-section h3 { font-size: 1rem; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+.testi-section p { font-size: .82rem; color: var(--sub); margin-bottom: 20px; }
+.testi-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; }
+.testi-img { border-radius: var(--r-sm); overflow: hidden; border: 1px solid var(--border); background: var(--bg3); transition: all .3s; }
+.testi-img:hover { border-color: var(--border-l); transform: translateY(-2px); }
+.testi-img img { width: 100%; height: auto; display: block; }
+
+/* Guarantee */
+.guarantee { display: flex; align-items: center; gap: 20px; border-radius: var(--r); padding: 22px 26px; margin-top: 20px; background: var(--bg2); border: 1px solid var(--border); }
+.g-icon { width: 44px; height: 44px; border-radius: var(--r-sm); background: rgba(255,182,39,.1); border: 1px solid rgba(255,182,39,.2); color: #FFB627; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0; }
+.guarantee h4 { font-size: .95rem; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+.guarantee p { font-size: .84rem; color: var(--sub); }
+
+/* ─── Footer ──────────────────────────────────────────────────── */
+footer { border-top: 1px solid var(--border); padding: 40px 0 32px; text-align: center; }
+.f-logo { font-weight: 700; font-size: 1.2rem; color: var(--text); margin-bottom: 12px; display: block; letter-spacing: -.02em; }
+.f-logo span { background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.f-disc { font-size: .72rem; color: var(--muted); max-width: 540px; margin: 0 auto 12px; line-height: 1.7; }
+.f-copy { font-size: .74rem; color: var(--muted); font-family: 'Space Mono', monospace; }
+
+/* ─── Responsive ──────────────────────────────────────────────── */
+@media (max-width: 960px) {
+  .pain-grid, .tools-grid { grid-template-columns: 1fr; }
+  .method-grid, .about-grid { grid-template-columns: 1fr; gap: 40px; }
+  .offer-grid { grid-template-columns: 1fr; }
+  .testi-grid { grid-template-columns: repeat(2,1fr); }
+  .creds { grid-template-columns: 1fr; }
+  .nav-links { display: none; }
+  .pix-panel { position: static; }
+  .hero-stats { flex-wrap: wrap; }
+  .h-stat { border-right: none; border-bottom: 1px solid var(--border); }
+}
+@media (max-width: 600px) {
+  .hero-ctas { flex-direction: column; }
+  .about-photo img.sp { width: 80px; height: 80px; }
+  .guarantee { flex-direction: column; text-align: center; }
+  .testi-grid { grid-template-columns: 1fr; }
+}
+  </style>
+</head>
+<body>
+
+<div class="glow-blob gb1"></div>
+<div class="glow-blob gb2"></div>
+<div class="glow-blob gb3"></div>
+
+<!-- ── Navbar ─────────────────────────────────────────────────── -->
+<nav>
+  <div class="wrap nav-inner">
+    <a href="#" class="logo">Pedagog<span>IA</span></a>
+    <ul class="nav-links">
+      <li><a href="#metodo">O Método</a></li>
+      <li><a href="#ferramentas">Ferramentas</a></li>
+      <li><a href="#sobre">Quem sou eu</a></li>
+    </ul>
+    <a href="#oferta" class="btn-nav"><i class="fa-solid fa-bolt"></i> Garantir Vaga</a>
+  </div>
+</nav>
+
+<!-- ── Hero ───────────────────────────────────────────────────── -->
+<section id="hero">
+  <div class="wrap">
+    <div class="hero-tag"><span class="dot"></span> Pré-venda · vagas limitadas</div>
+    <h1>A IA não substitui professores.<br>Ela os libera para serem<br><span class="grad-text">mais humanos.</span></h1>
+    <p class="lead">Domine o ChatGPT, Gemini e NotebookLM para criar aulas envolventes, avaliações precisas e <strong>recuperar horas do seu fim de semana.</strong></p>
+    <div class="hero-ctas">
+      <a href="#oferta" class="btn-p"><i class="fa-solid fa-power-off"></i> Quero dominar a IA</a>
+      <a href="#metodo" class="btn-outline"><i class="fa-solid fa-play"></i> Ver como funciona</a>
+    </div>
+    <div class="hero-stats">
+      <div class="h-stat"><span class="n">72h</span><span class="l">Pré-venda</span></div>
+      <div class="h-stat"><span class="n">R$100</span><span class="l">Preço especial</span></div>
+      <div class="h-stat"><span class="n">50+</span><span class="l">Prompts grátis</span></div>
+      <div class="h-stat"><span class="n">06/06</span><span class="l">Primeira aula</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Problema ────────────────────────────────────────────────── -->
+<section id="problema" style="padding-top:0">
+  <div class="wrap">
+    <div class="s-tag">A realidade</div>
+    <h2 class="s-title">O que ninguém te contou<br>na <span class="grad">faculdade</span></h2>
+    <p class="s-sub">Você ama ensinar, mas a burocracia está esgotando sua energia.</p>
+    <div class="pain-grid">
+      <div class="pain-card">
+        <span class="pain-num">01 /</span>
+        <div class="pain-icon"><i class="fa-solid fa-calendar-xmark"></i></div>
+        <h3>Fins de Semana Perdidos</h3>
+        <p>Horas elaborando avaliações, adaptando materiais e criando roteiros do zero — ao invés de descansar.</p>
+      </div>
+      <div class="pain-card">
+        <span class="pain-num">02 /</span>
+        <div class="pain-icon"><i class="fa-solid fa-battery-quarter"></i></div>
+        <h3>Sobrecarga Mental</h3>
+        <p>Turmas heterogêneas exigem abordagens diferentes. Planejar tudo sozinho gera um desgaste absurdo.</p>
+      </div>
+      <div class="pain-card">
+        <span class="pain-num">03 /</span>
+        <div class="pain-icon"><i class="fa-solid fa-robot"></i></div>
+        <h3>Medo de Ficar para Trás</h3>
+        <p>A tecnologia avança rápido. Ver os alunos usando ferramentas que você ainda não domina gera insegurança.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Método ──────────────────────────────────────────────────── -->
+<section id="metodo">
+  <div class="wrap">
+    <div class="method-grid">
+      <div>
+        <div class="s-tag">O método</div>
+        <h2 class="s-title">80% da resposta depende do <span class="grad">prompt certo.</span></h2>
+        <p class="s-sub" style="margin-bottom:36px">A <strong style="color:var(--text)">Estrutura P-CEP</strong> transforma qualquer professor em especialista em prompts pedagógicos.</p>
+        <div class="steps">
+          <div class="step"><div class="step-num">P</div><div><h4>Persona</h4><p>Defina o papel exato que a IA deve assumir (ex: Professor de Matemática do 6º ano).</p></div></div>
+          <div class="step"><div class="step-num dim">C</div><div><h4>Contexto</h4><p>Forneça o cenário real dos seus alunos e o desafio atual de aprendizagem.</p></div></div>
+          <div class="step"><div class="step-num">E</div><div><h4>Especificação</h4><p>Detalhe restrições, tom de voz, linguagem e regras que a IA deve obedecer.</p></div></div>
+          <div class="step"><div class="step-num dim">P</div><div><h4>Produto</h4><p>O formato final prático e imediato que você precisa para usar na aula.</p></div></div>
+        </div>
+      </div>
+      <div class="terminal">
+        <div class="t-bar">
+          <div class="t-dots"><span class="t-r"></span><span class="t-y"></span><span class="t-g"></span></div>
+          <span class="t-lbl">p-cep.terminal</span>
+          <span class="t-badge">live</span>
+        </div>
+        <div class="t-body">
+          <p><span class="tp">// input do professor</span></p><br>
+          <p><span class="tk">[P]</span> Professor de Matemática — Ensino Fundamental II, 6º ano.</p>
+          <p><span class="tk">[C]</span> Alunos com dificuldade em frações antes da prova bimestral.</p>
+          <p><span class="tk">[E]</span> Linguagem clara, sem jargões, problemas do cotidiano.</p>
+          <p><span class="tk">[P]</span> 15 questões de múltipla escolha prontas para impressão A4.</p><br>
+          <div class="t-response">
+            <p><span class="tr">// output da IA — 4 segundos</span></p><br>
+            <p style="color:#A7F3D0;font-weight:700">ATIVIDADE DE REVISÃO — MAT 6º ANO</p><br>
+            <p style="color:#6B7280">1. João comprou uma pizza com 8 pedaços e comeu 3.</p>
+            <p style="color:#6B7280">   Qual fração representa o que ele comeu?</p>
+            <p style="color:#6B7280;padding-left:16px">A) 3/5 &nbsp; B) 3/8 &nbsp; C) 5/8 &nbsp; D) 8/3</p><br>
+            <p class="td">[ + 14 questões + gabarito gerados... ]</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Ferramentas ─────────────────────────────────────────────── -->
+<section id="ferramentas">
+  <div class="wrap">
+    <div class="s-tag">Ferramentas</div>
+    <h2 class="s-title">Seu novo arsenal <span class="grad">pedagógico</span></h2>
+    <p class="s-sub">Domine os assistentes mais avançados com foco total em educação e produtividade.</p>
+    <div class="tools-grid">
+      <div class="tool-card">
+        <div class="tool-logo"><img src="gptlogo.png" alt="ChatGPT"></div>
+        <span class="tool-tag">// preparação e avaliação</span>
+        <h3>ChatGPT</h3>
+        <p>Gere rascunhos, resolva bloqueios criativos, crie exercícios com níveis de dificuldade ajustáveis e rubricas precisas em segundos.</p>
+        <ul class="tool-feats"><li>Roteiros de aula P-CEP</li><li>Ajuste de tom e complexidade</li></ul>
+      </div>
+      <div class="tool-card">
+        <div class="tool-logo"><img src="geminilogo.webp" alt="Gemini"></div>
+        <span class="tool-tag">// integração total</span>
+        <h3>Google Gemini</h3>
+        <p>Exporte direto para Docs ou Sheets. Analise tabelas de notas e gere relatórios integrados ao ecossistema Google.</p>
+        <ul class="tool-feats"><li>Recurso Canvas não-linear</li><li>Análise de dados e notas</li></ul>
+      </div>
+      <div class="tool-card">
+        <div class="tool-logo"><img src="notebooklmlogo.jpg" alt="NotebookLM"></div>
+        <span class="tool-tag">// seus materiais, sua IA</span>
+        <h3>NotebookLM</h3>
+        <p>Faça upload dos seus PDFs e livros. A IA responderá <strong style="color:var(--text)">estritamente</strong> com base no seu material, sem alucinações.</p>
+        <ul class="tool-feats"><li>Transformação em podcast</li><li>Geração de flashcards</li></ul>
+      </div>
+      <div class="tool-card">
+        <div class="tool-logo"><img src="perplexitylogo.avif" alt="Perplexity"></div>
+        <span class="tool-tag">// pesquisa acadêmica</span>
+        <h3>Perplexity</h3>
+        <p>Vá além do buscador comum. Pesquisa profunda com referências bibliográficas reais e fontes verificáveis.</p>
+        <ul class="tool-feats"><li>Fontes confiáveis com links</li><li>Base para artigos e mestrado</li></ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Sobre ────────────────────────────────────────────────────── -->
+<section id="sobre">
+  <div class="wrap">
+    <div class="about-grid">
+      <div class="about-photo">
+        <div class="photo-frame">
+          <img src="perfil2.png" alt="Diego Prado" class="mp">
+          <div class="about-tag"><span>Diego Prado · Professor & Pesquisador</span></div>
+        </div>
+        <img src="perfil1.png" alt="Diego Prado" class="sp">
+      </div>
+      <div class="about-text">
+        <div class="s-tag">Quem sou eu</div>
+        <h2 class="s-title">Do chão de escola para a prática docente <span class="grad">do futuro.</span></h2>
+        <p>Chega de ouvir fórmulas mágicas de quem nunca enfrentou uma sala com 40 alunos. <strong>Eu sou professor.</strong></p>
+        <p>Minha missão não é te dar mais trabalho com tecnologia, mas usar a IA para recuperar seu tempo. Pesquisa acadêmica de ponta aplicada ao chão da escola — ético, prático e feito por quem sabe que seu tempo livre é seu bem mais precioso.</p>
+        <div class="creds">
+          <div class="cred"><i class="fa-solid fa-graduation-cap"></i><div><b>História</b><span>Graduado pela Unioeste, atuante na rede pública e privada.</span></div></div>
+          <div class="cred"><i class="fa-solid fa-book-bookmark"></i><div><b>Tecnologias Educacionais</b><span>Mestrando pela Universidade Estadual de Maringá (UEM).</span></div></div>
+          <div class="cred"><i class="fa-solid fa-network-wired"></i><div><b>IA e Dados</b><span>Graduando em Inteligência Artificial aplicada.</span></div></div>
+          <div class="cred"><i class="fa-solid fa-chalkboard-user"></i><div><b>Educação Especial</b><span>Especialista em Metodologia e Robótica Educacional.</span></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Quote ────────────────────────────────────────────────────── -->
+<section id="quote">
+  <div class="quote-band">
+    <div class="wrap">
+      <blockquote>"O futuro da educação pública é humano, <em>potencializado pela tecnologia.</em>"</blockquote>
+      <cite>— Diego Prado · PedagogIA</cite>
+    </div>
+  </div>
+</section>
+
+<!-- ── Oferta ───────────────────────────────────────────────────── -->
+<section id="oferta">
+  <div class="wrap">
+    <div class="s-tag">Pré-venda exclusiva</div>
+    <h2 class="s-title">Aproveite a pré-venda, garanta sua vaga<br>e receba o ebook <span class="grad">grátis.</span></h2>
+
+    <div class="offer-grid">
+      <!-- Card da oferta -->
+      <div class="offer-card">
+        <div class="offer-head">
+          <h3>PedagogIA — Pré-Venda</h3>
+          <div class="pv-badge"><span class="dot"></span> 72 horas</div>
+        </div>
+        <div class="offer-body">
+          <div class="price-block">
+            <p class="price-old">Após a pré-venda: R$ 150,00</p>
+            <div class="price-row">
+              <span class="price-cur">R$</span>
+              <span class="price-num">100</span>
+            </div>
+            <p class="price-label">// preço de pré-venda · pagamento único via PIX</p>
+            <p class="price-after"><i class="fa-solid fa-circle-exclamation"></i> O valor sobe para R$ 150 ao fim do prazo</p>
+          </div>
+
+          <div class="cd-wrap">
+            <p class="cd-label">// oferta expira em</p>
+            <div class="cd-units">
+              <div class="cd-unit"><span class="cd-num" id="cd-h">72</span><span class="cd-tag">horas</span></div>
+              <span class="cd-sep">:</span>
+              <div class="cd-unit"><span class="cd-num" id="cd-m">00</span><span class="cd-tag">min</span></div>
+              <span class="cd-sep">:</span>
+              <div class="cd-unit"><span class="cd-num" id="cd-s">00</span><span class="cd-tag">seg</span></div>
+            </div>
+          </div>
+
+          <ul class="offer-feats">
+            <li class="hl"><i class="fa-solid fa-star"></i> Acesso completo ao curso PedagogIA</li>
+            <li class="hl"><i class="fa-solid fa-star"></i> Comunidade VIP no WhatsApp</li>
+            <li class="hl"><i class="fa-solid fa-gift"></i> Ebook <em>50 Prompts Prontos para Professores</em> por e-mail <strong>(GRÁTIS)</strong></li>
+            <li><i class="fa-solid fa-check"></i> Biblioteca de Prompts atualizada</li>
+            <li><i class="fa-solid fa-check"></i> Atualizações de conteúdo</li>
+          </ul>
+
+          <div class="date-box">
+            <i class="fa-solid fa-calendar-check"></i>
+            <div>
+              <strong>Primeira aula: 1º sábado de junho (06/06/2026)</strong>
+              <span>Após fechar a turma, confirmamos a melhor data no grupo.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Painel PIX -->
+      <div class="pix-panel">
+        <div class="pix-head">
+          <h3>Pague via PIX</h3>
+          <p>R$ 100,00 · chave e-mail</p>
+        </div>
+        <div class="pix-body">
+          <div class="qr-wrap">
+            <div class="qr-frame"><div id="qrcode"></div></div>
+          </div>
+          <div class="pix-box">
+            <span class="lbl">Chave PIX (e-mail)</span>
+            <span class="val">diegooljcounts@gmail.com</span>
+            <button class="btn-copy" onclick="copiarChave()"><i class="fa-regular fa-copy"></i> <span id="t-chave">Copiar chave</span></button>
+          </div>
+          <div class="pix-box" style="margin-bottom:16px">
+            <span class="lbl">Código PIX (copia e cola)</span>
+            <span class="val" id="pix-payload" style="font-size:.58rem;display:block"></span>
+            <button class="btn-copy" onclick="copiarPayload()"><i class="fa-regular fa-copy"></i> <span id="t-payload">Copiar código PIX</span></button>
+          </div>
+
+          <button id="btn-confirm" class="btn-confirm" onclick="confirmarPagamento()">
+            <i class="fa-solid fa-circle-check"></i> Já realizei o pagamento
+          </button>
+          <p class="hint-txt" id="hint-txt">// clique após confirmar o pagamento via PIX</p>
+
+          <div id="form-wrap" class="hidden">
+            <div class="f-head">
+              <p>Preencha seus dados para liberar o acesso</p>
+              <span>O ebook será enviado ao seu e-mail.</span>
+            </div>
+            <form id="form-aluno" onsubmit="submeterForm(event)">
+              <div class="field"><label>Nome completo</label><input type="text" id="f-nome" required placeholder="Seu nome"></div>
+              <div class="field"><label>E-mail</label><input type="email" id="f-email" required placeholder="seu@email.com"></div>
+              <div class="field"><label>WhatsApp</label><input type="tel" id="f-wpp" required placeholder="(00) 00000-0000"></div>
+              <button type="submit" id="btn-submit" class="btn-submit"><i class="fa-solid fa-unlock"></i> Liberar meu acesso</button>
+            </form>
+          </div>
+
+          <div id="access-wrap" class="hidden">
+            <div class="access-ok">
+              <p>Acesso liberado! Bem-vindo(a) ao PedagogIA.</p>
+              <span>Ebook enviado para <strong id="email-conf" style="color:var(--text)"></strong></span>
+            </div>
+            <a href="https://chat.whatsapp.com/GXP02lLDeeEAd3hQUFCzI1?mode=gi_t" target="_blank" rel="noopener" class="btn-wpp">
+              <i class="fa-brands fa-whatsapp" style="font-size:1.15rem"></i> Entrar no Grupo Agora
+            </a>
+            <p class="spam-note">// verifique caixa de entrada e spam</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="testi-section">
+      <h3>O que dizem os professores</h3>
+      <p>Veja quem já transformou sua rotina com o PedagogIA:</p>
+      <div class="testi-grid">
+        <div class="testi-img"><img src="depoimento-1.jpg" alt="Depoimento 1" onerror="this.parentElement.style.display='none'"></div>
+        <div class="testi-img"><img src="depoimento-2.jpg" alt="Depoimento 2" onerror="this.parentElement.style.display='none'"></div>
+        <div class="testi-img"><img src="depoimento-4.jpeg" alt="Depoimento 4" onerror="this.parentElement.style.display='none'"></div>
+        <div class="testi-img"><img src="depoimento-3.jpeg" alt="Depoimento 3" onerror="this.parentElement.style.display='none'"></div>
+      </div>
+    </div>
+
+    <div class="guarantee">
+      <div class="g-icon"><i class="fa-solid fa-shield-halved"></i></div>
+      <div>
+        <h4>Garantia Incondicional de 7 Dias</h4>
+        <p>Acesse o curso, teste os prompts. Se não economizar seu tempo, devolvo 100% do seu dinheiro. O risco é meu.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Footer ──────────────────────────────────────────────────── -->
+<footer>
+  <div class="wrap">
+    <span class="f-logo">Pedagog<span>IA</span></span>
+    <p class="f-disc">Este site não faz parte do Google LLC, OpenAI ou Meta Platforms Inc. Todas as marcas registradas pertencem aos seus respectivos proprietários.</p>
+    <p class="f-copy">&copy; 2026 PedagogIA com Diego. Todos os direitos reservados.</p>
+  </div>
+</footer>
+
+<script>
+var APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz5zwU9r8A6A5wcKpOzxUMVioRkBJh4Jev6zgSTGrpbXW9lWlxnKVW8Jrze9Gk4-60h4Q/exec";
+
+function gerarPix() {
+  function tlv(id, v) { return id + String(v.length).padStart(2,"0") + v; }
+  function crc16(s) {
+    var c = 0xFFFF;
+    for (var i = 0; i < s.length; i++) {
+      c ^= s.charCodeAt(i) << 8;
+      for (var j = 0; j < 8; j++) { c = (c & 0x8000) ? ((c << 1) ^ 0x1021) : (c << 1); c &= 0xFFFF; }
+    }
+    return c.toString(16).toUpperCase().padStart(4,"0");
+  }
+  var mai = tlv("00","BR.GOV.BCB.PIX") + tlv("01","diegooljcounts@gmail.com");
+  var p = tlv("00","01") + tlv("26",mai) + tlv("52","0000") + tlv("53","986") + tlv("54","100.00") + tlv("58","BR") + tlv("59","Diego") + tlv("60","MARINGA") + tlv("62",tlv("05","PEDAGOGIA")) + "6304";
+  return p + crc16(p);
+}
+
+var pixPayload = gerarPix();
+document.getElementById("pix-payload").textContent = pixPayload;
+
+new QRCode(document.getElementById("qrcode"), {
+  text: pixPayload, width: 160, height: 160,
+  colorDark: "#000000", colorLight: "#ffffff",
+  correctLevel: QRCode.CorrectLevel.M
+});
+
+function copiarChave() {
+  navigator.clipboard.writeText("diegooljcounts@gmail.com").then(function() {
+    var el = document.getElementById("t-chave"); el.textContent = "Copiado!";
+    setTimeout(function(){ el.textContent = "Copiar chave"; }, 2500);
+  });
+}
+function copiarPayload() {
+  navigator.clipboard.writeText(pixPayload).then(function() {
+    var el = document.getElementById("t-payload"); el.textContent = "Copiado!";
+    setTimeout(function(){ el.textContent = "Copiar código PIX"; }, 2500);
+  });
+}
+
+function confirmarPagamento() {
+  document.getElementById("btn-confirm").classList.add("hidden");
+  document.getElementById("hint-txt").classList.add("hidden");
+  document.getElementById("form-wrap").classList.remove("hidden");
+}
+
+var _liberado = false;
+function liberarAcesso() {
+  if (_liberado) return; _liberado = true;
+  document.getElementById("email-conf").textContent = document.getElementById("f-email").value.trim();
+  document.getElementById("form-wrap").classList.add("hidden");
+  document.getElementById("access-wrap").classList.remove("hidden");
+}
+
+function submeterForm(e) {
+  e.preventDefault();
+  var btn = document.getElementById("btn-submit");
+  btn.disabled = true;
+  btn.innerHTML = "<i class='fa-solid fa-spinner fa-spin'></i> Salvando...";
+  fetch(APPS_SCRIPT_URL, {
+    method: "POST", mode: "no-cors",
+    headers: { "Content-Type": "text/plain" },
+    body: JSON.stringify({
+      nome: document.getElementById("f-nome").value.trim(),
+      email: document.getElementById("f-email").value.trim(),
+      whatsapp: document.getElementById("f-wpp").value.trim(),
+      produto: "PedagogIA - Pré-Venda R$100",
+      data: new Date().toLocaleString("pt-BR")
+    })
+  }).catch(function(){}).finally(liberarAcesso);
+  setTimeout(liberarAcesso, 4000);
+}
+
+(function(){
+  var KEY = "pedagogia_deadline_v2";
+  var dl = localStorage.getItem(KEY);
+  if (!dl) { dl = Date.now() + 72*3600*1000; localStorage.setItem(KEY, dl); } else dl = parseInt(dl,10);
+  function pad(n){ return String(n).padStart(2,"0"); }
+  function tick(){
+    var diff = dl - Date.now();
+    if (diff <= 0) { document.getElementById("cd-h").textContent = document.getElementById("cd-m").textContent = document.getElementById("cd-s").textContent = "00"; return; }
+    var s = Math.floor(diff/1000);
+    document.getElementById("cd-h").textContent = pad(Math.floor(s/3600));
+    document.getElementById("cd-m").textContent = pad(Math.floor((s%3600)/60));
+    document.getElementById("cd-s").textContent = pad(s%60);
+  }
+  tick(); setInterval(tick, 1000);
+})();
+</script>
+</body>
+</html>
